@@ -381,6 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8084d026d8386184980c6715621cd45e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Bullet: {fileID: 11470814, guid: c37ae8512c4eea54cbe5fd6a34cc6f90, type: 2}
 --- !u!135 &13545394
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -448,6 +449,11 @@ Prefab:
       propertyPath: AimTimeMul
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: Bullet
+      value: 
+      objectReference: {fileID: 11470814, guid: c37ae8512c4eea54cbe5fd6a34cc6f90,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 121394}
