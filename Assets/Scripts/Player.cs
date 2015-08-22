@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        if (Camera == null) Camera = Camera.main;
         _human = GetComponent<Human>();
         _human.IdleLook = () =>
         {

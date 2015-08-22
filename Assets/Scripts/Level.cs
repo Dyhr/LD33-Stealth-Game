@@ -19,6 +19,8 @@ public class Level : MonoBehaviour
     public Vector2 MaxRoomSize;
 
     public Door Door;
+    public Player Player;
+    public Guard Guard;
 
     private void Start()
     {
@@ -153,6 +155,10 @@ public class Level : MonoBehaviour
             }
         }
 
+        map[Random.Range(0, map.Count)].Spawns.Add(Player.transform);
+        map[Random.Range(0, map.Count)].Spawns.Add(Guard.transform);
+        map[Random.Range(0, map.Count)].Spawns.Add(Guard.transform);
+
         return map;
     }
 
@@ -181,6 +187,16 @@ public class Level : MonoBehaviour
             patrol.parent = transform;
             patrol.position = new Vector3(room.Position.x, 0, room.Position.y);
             patrol.tag = "Patrol";
+
+            for (int i = 0; i < room.Spawns.Count; i++)
+            {
+                var spawn = Instantiate(room.Spawns[i]);
+                spawn.transform.position = g.position + new Vector3(
+                        Random.Range(-room.Size.x/2 + WallThickness*2, room.Size.x/2 - WallThickness*2),
+                        0,
+                        Random.Range(-room.Size.y/2 + WallThickness*2, room.Size.y/2 - WallThickness*2));
+                spawn.parent = transform;
+            }
 
             var wall = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
             wall.parent = g;
@@ -315,11 +331,15 @@ class Room
     public Vector2 Position;
     public Vector2 Size;
     public Vector4 Doors;
+    public Room[] Neighbors;
+    public List<Transform> Spawns;
 
     public Room(Vector2 Position, Vector2 Size, Vector4 Doors)
     {
         this.Position = Position;
         this.Size = Size;
         this.Doors = Doors;
+        this.Neighbors = new Room[4];
+        this.Spawns = new List<Transform>(6);
     }
 }
