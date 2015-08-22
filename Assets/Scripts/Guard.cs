@@ -21,10 +21,10 @@ public class Guard : MonoBehaviour
     private Seeker seeker;
     private Path path;
     private int currentWaypoint = 0;
-    private static GameObject[] _switches;
-    private static readonly Dictionary<Transform, float> _patrols = new Dictionary<Transform, float>();
-    private static Transform _player;
-    private static Rigidbody _playerr;
+    public static GameObject[] _switches;
+    public static readonly Dictionary<Transform, float> _patrols = new Dictionary<Transform, float>();
+    public static Transform _player;
+    public static Rigidbody _playerr;
     private bool _awaitingPath;
     private int alert;
 

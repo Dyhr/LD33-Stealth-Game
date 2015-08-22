@@ -40,19 +40,29 @@ public class Player : MonoBehaviour
         Camera.transform.position = transform.position - Camera.transform.forward * 100;
         if (Input.GetAxisRaw("Fire2") > 0) _human.IdleLook();
 
-        Label.INSTANCE.Target = null;
+        if(Label.INSTANCE != null)
+            Label.INSTANCE.Target = null;
         var s = _switches.OrderBy(h => Vector3.Distance(transform.position, h.transform.position)).FirstOrDefault();
         if (s != null && Vector3.Distance(transform.position, s.transform.position) <= ActivateDistance)
         {
             var item = s.GetComponent<Networkable>();
-            if (item != null) { 
-                Label.INSTANCE.Target = s.transform;
-                Label.INSTANCE.Text.text = item.Name+"\nLevel - "+item.Level+"\nF - "+item.Action;
+            if (item != null)
+            {
+                if (Label.INSTANCE != null) { 
+                    Label.INSTANCE.Target = s.transform;
+                    Label.INSTANCE.Text.text = item.Name+"\nLevel - "+item.Level+"\nF - "+item.Action;
+                }
                 if (Input.GetButtonDown("Action"))
                 {
                     s.transform.SendMessage("Activate", _human);
                 }
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (Label.INSTANCE != null)
+            Label.INSTANCE.Target = null;
     }
 }
