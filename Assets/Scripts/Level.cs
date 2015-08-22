@@ -327,6 +327,19 @@ public class Level : MonoBehaviour
                     door.parent = transform;
                 }
             }
+
+            var network = FindObjectsOfType<Networkable>();
+            for (int i = 0; i < network.Length; ++i)
+            {
+                if(network[i].Neighbors.Count > 0) continue;
+                var j = 0;
+                do
+                {
+                    j = Random.Range(0, network.Length);
+                } while (j == i);
+                network[i].Neighbors.Add(network[j]);
+                network[j].Neighbors.Add(network[i]);
+            }
         }
     }
 }
