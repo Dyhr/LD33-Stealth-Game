@@ -3,38 +3,42 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour
 {
-    public float Speed = 100;
+    public float Speed = 40;
     public float Damage = 10;
     public float Piercing = 1;
 
     [HideInInspector]
     public Transform Owner;
-
-    private RaycastHit _hit;
-    private Rigidbody _rigidbody;
+    [HideInInspector]
+    public Vector3 Forward;
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();
-        Destroy(gameObject,5);
+        GetComponent<Collider>().enabled = false;
+        StartCoroutine("Init");
     }
 
-    private void Update()
+    IEnumerator Init()
     {
-        if (!_rigidbody.SweepTest(transform.forward, out _hit, Speed*Time.deltaTime*2))
+        while (Owner == null || Forward.magnitude == 0)
         {
-            transform.position += transform.forward*Speed*Time.deltaTime;
+            if (Owner != null) Forward = Owner.transform.forward;
+            yield return null;
         }
-        else
-        {
-            if (_hit.transform == Owner) return;
 
-            var human = _hit.transform.GetComponent<Human>();
-            if (human != null)
-            {
-                human.HP -= Mathf.Max(Damage - Mathf.Max(human.Armor - Piercing, 0), 0);
-            }
-            Destroy(gameObject);
+        Destroy(gameObject, 10);
+        GetComponent<Rigidbody>().velocity = Forward * Speed;
+        GetComponent<Collider>().enabled = true;
+        Physics.IgnoreCollision(GetComponent<Collider>(), Owner.GetComponent<Collider>());
+    }
+
+    private void OnCollisionEnter(Collision c)
+    {
+        var human = c.transform.GetComponent<Human>();
+        if (human != null)
+        {
+            human.HP -= Mathf.Max(Damage - Mathf.Max(human.Armor - Piercing, 0), 0);
         }
+        Destroy(gameObject);
     }
 }

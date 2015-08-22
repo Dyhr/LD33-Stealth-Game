@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         _human.InputControl = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        _human.InputFire = Input.GetAxisRaw("Fire1") > 0;
+        _human.InputFire = Input.GetAxisRaw("Fire1") * Input.GetAxisRaw("Fire2") > 0;
 
         Camera.transform.position = transform.position - Camera.transform.forward * 100;
         if (Input.GetAxisRaw("Fire2") > 0) _human.IdleLook();

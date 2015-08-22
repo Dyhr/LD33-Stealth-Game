@@ -24,7 +24,6 @@ public class Human : MonoBehaviour
     [HideInInspector]
     public Action IdleLook; 
 
-    private RaycastHit _hit;
     private Rigidbody _rigidbody;
 
     private void Start()
@@ -40,38 +39,28 @@ public class Human : MonoBehaviour
             return;
         }
 
-        if (Physics.Raycast(transform.position, Vector3.down, out _hit))
-        {
-            transform.position = _hit.point + Vector3.up * Height;
-        }
+        var move = (Forward * InputControl.z + Right * InputControl.x).normalized;
         if (InputControl.magnitude == 0)
         {
             if(IdleLook != null)IdleLook();
         }
         else
         {
-            var move = (Forward * InputControl.z + Right * InputControl.x).normalized;
-
             transform.LookAt(transform.position + move);
-            if (!_rigidbody.SweepTest(move, out _hit, Speed * Time.deltaTime*2))
-            {
-                transform.Translate(move * Speed * Time.deltaTime, Space.World);
-            }
-            else
-            {
-                // TODO ignore certain collisions
-            }
         }
+        _rigidbody.velocity = move * Speed;
 
         if (InputFire)
         {
             // TODO pool this
             var bullet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            bullet.AddComponent<Rigidbody>().isKinematic = true;
-            bullet.AddComponent<Bullet>();
+            bullet.AddComponent<Rigidbody>().useGravity = false;
+            bullet.AddComponent<Bullet>().Owner = transform;
+            bullet.AddComponent<Bullet>().Forward = transform.forward;
             bullet.transform.position = transform.position;
-            bullet.transform.rotation = transform.rotation;
             bullet.transform.localScale = Vector3.one*0.1f;
         }
+        InputControl = Vector3.zero;
+        InputFire = false;
     }
 }
