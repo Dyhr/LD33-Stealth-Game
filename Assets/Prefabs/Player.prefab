@@ -28,7 +28,7 @@ GameObject:
   - 54: {fileID: 5468946}
   - 114: {fileID: 11493676}
   - 114: {fileID: 11426820}
-  - 135: {fileID: 13545394}
+  - 136: {fileID: 13626522}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -122,7 +122,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 121394}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.19399381, y: 0, z: 23.1030731}
+  m_LocalPosition: {x: -6.54497719, y: -1, z: 22.8404636}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 499310}
@@ -160,7 +160,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 173806}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.300000012, y: .294999987, z: 0}
+  m_LocalPosition: {x: -.300000012, y: .0329999998, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 444650}
@@ -382,8 +382,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Bullet: {fileID: 11470814, guid: c37ae8512c4eea54cbe5fd6a34cc6f90, type: 2}
---- !u!135 &13545394
-SphereCollider:
+--- !u!136 &13626522
+CapsuleCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -391,8 +391,9 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
   m_Radius: .25
+  m_Height: 1
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &100100000
 Prefab:
@@ -454,6 +455,10 @@ Prefab:
       value: 
       objectReference: {fileID: 11470814, guid: c37ae8512c4eea54cbe5fd6a34cc6f90,
         type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 121394}

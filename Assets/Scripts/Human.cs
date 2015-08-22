@@ -72,6 +72,7 @@ public class Human : MonoBehaviour
 
         InputControl = Vector3.zero;
         InputFire = false;
+        InputAim = false;
         LockRot = false;
     }
 }

@@ -115,6 +115,7 @@ public class Guard : MonoBehaviour
             }
         }
 
+        human.InputAim = alert > 0;
         human.Speed = alert == 0 ? NormalSpeed : (alert == 2 ? SlowSpeed : FastSpeed);
 
         if (alert == 2)

@@ -193,7 +193,7 @@ public class Level : MonoBehaviour
                 var spawn = Instantiate(room.Spawns[i]);
                 spawn.transform.position = g.position + new Vector3(
                         Random.Range(-room.Size.x/2 + WallThickness*2, room.Size.x/2 - WallThickness*2),
-                        0,
+                        1,
                         Random.Range(-room.Size.y/2 + WallThickness*2, room.Size.y/2 - WallThickness*2));
                 spawn.parent = transform;
             }
