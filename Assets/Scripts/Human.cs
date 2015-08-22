@@ -22,7 +22,9 @@ public class Human : MonoBehaviour
     public Vector3 Right = Vector3.right;
 
     [HideInInspector]
-    public Action IdleLook; 
+    public Action IdleLook;
+    [HideInInspector]
+    public bool LockRot;
 
     private Rigidbody _rigidbody;
 
@@ -44,9 +46,9 @@ public class Human : MonoBehaviour
         {
             if(IdleLook != null)IdleLook();
         }
-        else
+        else if (!LockRot)
         {
-            transform.LookAt(transform.position + move);
+            transform.rotation = Quaternion.Lerp(transform.rotation,Quaternion.LookRotation(move),0.4f);
         }
         _rigidbody.velocity = move * Speed;
 
@@ -62,5 +64,6 @@ public class Human : MonoBehaviour
         }
         InputControl = Vector3.zero;
         InputFire = false;
+        LockRot = false;
     }
 }
