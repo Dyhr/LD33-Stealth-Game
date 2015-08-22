@@ -21,6 +21,7 @@ public class Level : MonoBehaviour
     public Door Door;
     public Player Player;
     public Guard Guard;
+    public Terminal Terminal;
 
     private void Start()
     {
@@ -158,6 +159,10 @@ public class Level : MonoBehaviour
         map[Random.Range(0, map.Count)].Spawns.Add(Player.transform);
         map[Random.Range(0, map.Count)].Spawns.Add(Guard.transform);
         map[Random.Range(0, map.Count)].Spawns.Add(Guard.transform);
+        map[Random.Range(0, map.Count)].Spawns.Add(Terminal.transform);
+        map[Random.Range(0, map.Count)].Spawns.Add(Terminal.transform);
+        map[Random.Range(0, map.Count)].Spawns.Add(Terminal.transform);
+        map[Random.Range(0, map.Count)].Spawns.Add(Terminal.transform);
 
         return map;
     }

@@ -500,7 +500,7 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 34113862}
-  m_LocalRotation: {x: .38260287, y: 0, z: 0, w: .923912942}
+  m_LocalRotation: {x: .353553414, y: .353553414, z: -.14644663, w: .853553355}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -21330,6 +21330,7 @@ MonoBehaviour:
   Door: {fileID: 11466134, guid: 34b7175031434084fb1648583792ade1, type: 2}
   Player: {fileID: 11493676, guid: 0334b415449ffb149a79221133bbb4d6, type: 2}
   Guard: {fileID: 11408322, guid: 943016f4fe84eac48b1bfd0c00aebeea, type: 2}
+  Terminal: {fileID: 11445742, guid: 7e0ecef858c76344898880970b008fe3, type: 2}
 --- !u!1 &1904628694
 GameObject:
   m_ObjectHideFlags: 0
