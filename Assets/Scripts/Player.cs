@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
     {
         _human.InputControl = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         _human.InputFire = Input.GetButtonDown("Fire1") && Input.GetButton("Fire2");
+        _human.InputAim = Input.GetButton("Fire2");
 
         Camera.transform.position = transform.position - Camera.transform.forward * 100;
         if (Input.GetAxisRaw("Fire2") > 0) _human.IdleLook();

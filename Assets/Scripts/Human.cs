@@ -12,8 +12,13 @@ public class Human : MonoBehaviour
     public float Armor;
     public int Level;
 
+    public AnimationCurve AimCurve;
+    public float AimTimeMul;
+
     [HideInInspector]
     public Vector3 InputControl;
+    [HideInInspector]
+    public bool InputAim;
     [HideInInspector]
     public bool InputFire;
 
@@ -28,6 +33,7 @@ public class Human : MonoBehaviour
     public bool LockRot;
 
     private Rigidbody _rigidbody;
+    private float aimTime;
 
     private void Start()
     {
@@ -42,27 +48,28 @@ public class Human : MonoBehaviour
             return;
         }
 
-        var move = (Forward * InputControl.z + Right * InputControl.x).normalized;
+        var move = (Forward*InputControl.z + Right*InputControl.x).normalized;
         if (InputControl.magnitude == 0)
         {
-            if(IdleLook != null)IdleLook();
+            if (IdleLook != null) IdleLook();
         }
         else if (!LockRot)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation,Quaternion.LookRotation(move),0.4f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(move), 0.4f);
         }
-        _rigidbody.velocity = move * Speed;
+        _rigidbody.velocity = move*Speed;
 
-        if (InputFire)
-        {
-            // TODO pool this
-            var bullet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            bullet.AddComponent<Rigidbody>().useGravity = false;
-            bullet.AddComponent<Bullet>().Owner = transform;
-            bullet.AddComponent<Bullet>().Forward = transform.forward;
-            bullet.transform.position = transform.position;
-            bullet.transform.localScale = Vector3.one*0.1f;
+        var gun = GetComponentInChildren<Gun>();
+        if (gun != null) {
+            aimTime += (InputAim ? -Time.deltaTime : Time.deltaTime) * AimTimeMul;
+            aimTime = Mathf.Clamp01(aimTime);
+            gun.transform.localRotation = Quaternion.Slerp(Quaternion.Euler(90, 0, 0), Quaternion.Euler(0, 0, 0), AimCurve.Evaluate(aimTime));
+            if (InputFire && aimTime == 0)
+            {
+                gun.Fire();
+            }
         }
+
         InputControl = Vector3.zero;
         InputFire = false;
         LockRot = false;

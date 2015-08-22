@@ -50,7 +50,6 @@ public class Guard : MonoBehaviour
         {
             if (currentWaypoint >= path.vectorPath.Count)
             {
-                Debug.Log("End Of Path Reached");
                 path = null;
                 alert = 0;
                 return;
