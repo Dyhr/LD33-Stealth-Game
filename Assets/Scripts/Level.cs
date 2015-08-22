@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using System.Collections;
 
@@ -10,11 +11,14 @@ public class Level : MonoBehaviour
     public float WallThickness;
     public float WallHeight;
     public float DoorWidth;
+    public float DoorHeight;
     public Material WallMaterial;
     public Material FloorMaterial;
 
     public Vector2 MinRoomSize;
     public Vector2 MaxRoomSize;
+
+    public Door Door;
 
     private void Start()
     {
@@ -31,8 +35,9 @@ public class Level : MonoBehaviour
 
         map.Add(new Room(Vector2.zero, MaxRoomSize, Vector4.zero));
 
-        for (int k = 0; k < Rooms; ++k) { 
-            var o = map[Random.Range(0,map.Count)];
+        for (int k = 0; k < Rooms; ++k)
+        {
+            var o = map[Random.Range(0, map.Count)];
             for (int i = 0; i < 4; ++i)
             {
                 if (o.Doors[i] != 0) continue;
@@ -49,79 +54,79 @@ public class Level : MonoBehaviour
                     switch (i)
                     {
                         case 0:
-                            room.Position -= Vector2.right*(o.Size.x + room.Size.x)/2;
-                            room.Position += Vector2.up*Random.Range(-sy, sy);
+                            room.Position -= Vector2.right * (o.Size.x + room.Size.x) / 2;
+                            room.Position += Vector2.up * Random.Range(-sy, sy);
 
-                            min = (room.Position.y - o.Position.y - room.Size.y/2 + o.Size.y/2 +
-                                   (WallThickness + DoorWidth/2))/o.Size.y;
-                            max = (room.Position.y - o.Position.y + room.Size.y/2 + o.Size.y/2 -
-                                   (WallThickness + DoorWidth/2))/o.Size.y;
-                            min = Mathf.Clamp(min, (WallThickness + DoorWidth/2)/o.Size.y,
-                                1 - (WallThickness + DoorWidth/2)/o.Size.y);
-                            max = Mathf.Clamp(max, (WallThickness + DoorWidth/2)/o.Size.y,
-                                1 - (WallThickness + DoorWidth/2)/o.Size.y);
+                            min = (room.Position.y - o.Position.y - room.Size.y / 2 + o.Size.y / 2 +
+                                   (WallThickness + DoorWidth / 2)) / o.Size.y;
+                            max = (room.Position.y - o.Position.y + room.Size.y / 2 + o.Size.y / 2 -
+                                   (WallThickness + DoorWidth / 2)) / o.Size.y;
+                            min = Mathf.Clamp(min, (WallThickness + DoorWidth / 2) / o.Size.y,
+                                1 - (WallThickness + DoorWidth / 2) / o.Size.y);
+                            max = Mathf.Clamp(max, (WallThickness + DoorWidth / 2) / o.Size.y,
+                                1 - (WallThickness + DoorWidth / 2) / o.Size.y);
                             if (!(min == max && (max == 0 || max == 1)))
                             {
                                 o.Doors[0] = Random.Range(min, max);
-                                room.Doors[1] = (o.Doors[0]*o.Size.y + o.Position.y - o.Size.y/2 + room.Size.y/2 -
-                                                 room.Position.y)/room.Size.y;
+                                room.Doors[1] = (o.Doors[0] * o.Size.y + o.Position.y - o.Size.y / 2 + room.Size.y / 2 -
+                                                 room.Position.y) / room.Size.y;
                             }
                             break;
                         case 1:
-                            room.Position += Vector2.right*(o.Size.x + room.Size.x)/2;
-                            room.Position += Vector2.up*Random.Range(-sy, sy);
+                            room.Position += Vector2.right * (o.Size.x + room.Size.x) / 2;
+                            room.Position += Vector2.up * Random.Range(-sy, sy);
 
-                            min = (room.Position.y - o.Position.y - room.Size.y/2 + o.Size.y/2 +
-                                   (WallThickness + DoorWidth/2))/o.Size.y;
-                            max = (room.Position.y - o.Position.y + room.Size.y/2 + o.Size.y/2 -
-                                   (WallThickness + DoorWidth/2))/o.Size.y;
-                            min = Mathf.Clamp(min, (WallThickness + DoorWidth/2)/o.Size.y,
-                                1 - (WallThickness + DoorWidth/2)/o.Size.y);
-                            max = Mathf.Clamp(max, (WallThickness + DoorWidth/2)/o.Size.y,
-                                1 - (WallThickness + DoorWidth/2)/o.Size.y);
+                            min = (room.Position.y - o.Position.y - room.Size.y / 2 + o.Size.y / 2 +
+                                   (WallThickness + DoorWidth / 2)) / o.Size.y;
+                            max = (room.Position.y - o.Position.y + room.Size.y / 2 + o.Size.y / 2 -
+                                   (WallThickness + DoorWidth / 2)) / o.Size.y;
+                            min = Mathf.Clamp(min, (WallThickness + DoorWidth / 2) / o.Size.y,
+                                1 - (WallThickness + DoorWidth / 2) / o.Size.y);
+                            max = Mathf.Clamp(max, (WallThickness + DoorWidth / 2) / o.Size.y,
+                                1 - (WallThickness + DoorWidth / 2) / o.Size.y);
                             if (!(min == max && (max == 0 || max == 1)))
                             {
                                 o.Doors[1] = Random.Range(min, max);
-                                room.Doors[0] = (o.Doors[1]*o.Size.y + o.Position.y - o.Size.y/2 + room.Size.y/2 -
-                                                 room.Position.y)/room.Size.y;
+                                room.Doors[0] = (o.Doors[1] * o.Size.y + o.Position.y - o.Size.y / 2 + room.Size.y / 2 -
+                                                 room.Position.y) / room.Size.y;
                             }
                             break;
                         case 2:
-                            room.Position -= Vector2.up*(o.Size.y + room.Size.y)/2;
-                            room.Position += Vector2.right*Random.Range(-sx, sx);
+                            room.Position -= Vector2.up * (o.Size.y + room.Size.y) / 2;
+                            room.Position += Vector2.right * Random.Range(-sx, sx);
 
-                            min = (room.Position.x - o.Position.x - room.Size.x/2 + o.Size.x/2 +
-                                   (WallThickness + DoorWidth/2))/o.Size.x;
-                            max = (room.Position.x - o.Position.x + room.Size.x/2 + o.Size.x/2 -
-                                   (WallThickness + DoorWidth/2))/o.Size.x;
-                            min = Mathf.Clamp(min, (WallThickness + DoorWidth/2)/o.Size.x,
-                                1 - (WallThickness + DoorWidth/2)/o.Size.x);
-                            max = Mathf.Clamp(max, (WallThickness + DoorWidth/2)/o.Size.x,
-                                1 - (WallThickness + DoorWidth/2)/o.Size.x);
+                            min = (room.Position.x - o.Position.x - room.Size.x / 2 + o.Size.x / 2 +
+                                   (WallThickness + DoorWidth / 2)) / o.Size.x;
+                            max = (room.Position.x - o.Position.x + room.Size.x / 2 + o.Size.x / 2 -
+                                   (WallThickness + DoorWidth / 2)) / o.Size.x;
+                            min = Mathf.Clamp(min, (WallThickness + DoorWidth / 2) / o.Size.x,
+                                1 - (WallThickness + DoorWidth / 2) / o.Size.x);
+                            max = Mathf.Clamp(max, (WallThickness + DoorWidth / 2) / o.Size.x,
+                                1 - (WallThickness + DoorWidth / 2) / o.Size.x);
                             if (!(min == max && (max == 0 || max == 1)))
                             {
                                 o.Doors[2] = Random.Range(min, max);
-                                room.Doors[3] = (o.Doors[2]*o.Size.x + o.Position.x - o.Size.x/2 + room.Size.x/2 -
-                                                 room.Position.x)/room.Size.x;
+                                room.Doors[3] = (o.Doors[2] * o.Size.x + o.Position.x - o.Size.x / 2 + room.Size.x / 2 -
+                                                 room.Position.x) / room.Size.x;
                             }
                             break;
                         case 3:
-                            room.Position += Vector2.up*(o.Size.y + room.Size.y)/2;
+                            room.Position += Vector2.up * (o.Size.y + room.Size.y) / 2;
                             room.Position += Vector2.right * Random.Range(-sx, sx);
 
-                            min = (room.Position.x - o.Position.x - room.Size.x/2 + o.Size.x/2 +
-                                   (WallThickness + DoorWidth/2))/o.Size.x;
-                            max = (room.Position.x - o.Position.x + room.Size.x/2 + o.Size.x/2 -
-                                   (WallThickness + DoorWidth/2))/o.Size.x;
-                            min = Mathf.Clamp(min, (WallThickness + DoorWidth/2)/o.Size.x,
-                                1 - (WallThickness + DoorWidth/2)/o.Size.x);
-                            max = Mathf.Clamp(max, (WallThickness + DoorWidth/2)/o.Size.x,
-                                1 - (WallThickness + DoorWidth/2)/o.Size.x);
+                            min = (room.Position.x - o.Position.x - room.Size.x / 2 + o.Size.x / 2 +
+                                   (WallThickness + DoorWidth / 2)) / o.Size.x;
+                            max = (room.Position.x - o.Position.x + room.Size.x / 2 + o.Size.x / 2 -
+                                   (WallThickness + DoorWidth / 2)) / o.Size.x;
+                            min = Mathf.Clamp(min, (WallThickness + DoorWidth / 2) / o.Size.x,
+                                1 - (WallThickness + DoorWidth / 2) / o.Size.x);
+                            max = Mathf.Clamp(max, (WallThickness + DoorWidth / 2) / o.Size.x,
+                                1 - (WallThickness + DoorWidth / 2) / o.Size.x);
                             if (!(min == max && (max == 0 || max == 1)))
                             {
                                 o.Doors[3] = Random.Range(min, max);
-                                room.Doors[2] = (o.Doors[3]*o.Size.x + o.Position.x - o.Size.x/2 + room.Size.x/2 -
-                                                 room.Position.x)/room.Size.x;
+                                room.Doors[2] = (o.Doors[3] * o.Size.x + o.Position.x - o.Size.x / 2 + room.Size.x / 2 -
+                                                 room.Position.x) / room.Size.x;
                             }
                             break;
                     }
@@ -131,14 +136,15 @@ public class Level : MonoBehaviour
                     {
                         var other = map[j];
                         var dp = room.Position - other.Position;
-                        var ds = (room.Size + other.Size)/2;
+                        var ds = (room.Size + other.Size) / 2;
                         if (Mathf.Abs(dp.x) < ds.x && Mathf.Abs(dp.y) < ds.y)
                         {
                             done = false;
                             break;
                         }
                     }
-                    if (done) { 
+                    if (done)
+                    {
                         map.Add(room);
                         break;
                     }
@@ -231,6 +237,72 @@ public class Level : MonoBehaviour
             wall.localRotation = Quaternion.identity;
             wall.GetComponent<MeshRenderer>().sharedMaterial = FloorMaterial;
             wall.gameObject.layer = LayerMask.NameToLayer("Obstacles");
+
+            Transform door;
+            if (room.Doors[0] != 0)
+            {
+                var p = new Vector3(
+                    -room.Size.x / 2,
+                    DoorHeight / 2,
+                    room.Size.y * (room.Doors[0]) - room.Size.y / 2);
+                if (!FindObjectsOfType<Door>().Any(d => Vector3.Distance(p + floor.position, d.transform.position) < 1))
+                {
+                    door = Instantiate(Door).transform;
+                    door.parent = g;
+                    door.localScale = new Vector3(WallThickness, DoorHeight, DoorWidth);
+                    door.localPosition = p;
+                    door.parent = transform;
+                    door.GetComponent<Door>().Ready();
+                }
+            }
+            if (room.Doors[1] != 0)
+            {
+                var p = new Vector3(
+                    room.Size.x / 2,
+                    DoorHeight / 2,
+                    room.Size.y * (room.Doors[1]) - room.Size.y / 2);
+                if (!FindObjectsOfType<Door>().Any(d => Vector3.Distance(p + floor.position, d.transform.position) < 1))
+                {
+                    door = Instantiate(Door).transform;
+                    door.parent = g;
+                    door.localScale = new Vector3(WallThickness, DoorHeight, DoorWidth);
+                    door.localPosition = p;
+                    door.parent = transform;
+                    door.GetComponent<Door>().Ready();
+                }
+            }
+            if (room.Doors[2] != 0)
+            {
+                var p = new Vector3(
+                    room.Size.x * (room.Doors[2]) - room.Size.x / 2,
+                    DoorHeight / 2,
+                    -room.Size.y / 2);
+                if (!FindObjectsOfType<Door>().Any(d => Vector3.Distance(p + floor.position, d.transform.position) < 1))
+                {
+                    door = Instantiate(Door).transform;
+                    door.parent = g;
+                    door.localScale = new Vector3(DoorWidth, DoorHeight, WallThickness);
+                    door.localPosition = p;
+                    door.parent = transform;
+                    door.GetComponent<Door>().Ready();
+                }
+            }
+            if (room.Doors[3] != 0)
+            {
+                var p = new Vector3(
+                    room.Size.x * (room.Doors[3]) - room.Size.x / 2,
+                    DoorHeight / 2,
+                    room.Size.y / 2);
+                if (!FindObjectsOfType<Door>().Any(d => Vector3.Distance(p + floor.position, d.transform.position) < 1))
+                {
+                    door = Instantiate(Door).transform;
+                    door.parent = g;
+                    door.localScale = new Vector3(DoorWidth, DoorHeight, WallThickness);
+                    door.localPosition = p;
+                    door.parent = transform;
+                    door.GetComponent<Door>().Ready();
+                }
+            }
         }
     }
 }
