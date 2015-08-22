@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetButtonDown("Jump"))
             {
-                s.transform.SendMessage("Activate", "PLAYER");
+                s.transform.SendMessage("Activate", _human.Level+"PLAYER");
             }
         }
     }

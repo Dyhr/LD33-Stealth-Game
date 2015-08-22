@@ -10,6 +10,7 @@ public class Human : MonoBehaviour
 
     public float HP;
     public float Armor;
+    public int Level;
 
     [HideInInspector]
     public Vector3 InputControl;

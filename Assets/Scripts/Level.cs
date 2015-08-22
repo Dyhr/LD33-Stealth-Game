@@ -177,6 +177,11 @@ public class Level : MonoBehaviour
             floor.GetComponent<MeshRenderer>().sharedMaterial = FloorMaterial;
             floor.gameObject.layer = LayerMask.NameToLayer("Ground");
 
+            var patrol = new GameObject("Room").transform;
+            patrol.parent = transform;
+            patrol.position = new Vector3(room.Position.x, 0, room.Position.y);
+            patrol.tag = "Patrol";
+
             var wall = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
             wall.parent = g;
             wall.localScale = new Vector3(WallThickness, WallHeight, room.Size.y * (1 - room.Doors[0]) - (room.Doors[0] != 0 ? DoorWidth / 2 : 0));
@@ -249,10 +254,10 @@ public class Level : MonoBehaviour
                 {
                     door = Instantiate(Door).transform;
                     door.parent = g;
-                    door.localScale = new Vector3(WallThickness, DoorHeight, DoorWidth);
+                    door.localScale = new Vector3(DoorWidth, DoorHeight, WallThickness);
                     door.localPosition = p;
+                    door.Rotate(0,90,0);
                     door.parent = transform;
-                    door.GetComponent<Door>().Ready();
                 }
             }
             if (room.Doors[1] != 0)
@@ -265,10 +270,10 @@ public class Level : MonoBehaviour
                 {
                     door = Instantiate(Door).transform;
                     door.parent = g;
-                    door.localScale = new Vector3(WallThickness, DoorHeight, DoorWidth);
+                    door.localScale = new Vector3(DoorWidth, DoorHeight, WallThickness);
                     door.localPosition = p;
+                    door.Rotate(0, 90, 0);
                     door.parent = transform;
-                    door.GetComponent<Door>().Ready();
                 }
             }
             if (room.Doors[2] != 0)
@@ -284,7 +289,6 @@ public class Level : MonoBehaviour
                     door.localScale = new Vector3(DoorWidth, DoorHeight, WallThickness);
                     door.localPosition = p;
                     door.parent = transform;
-                    door.GetComponent<Door>().Ready();
                 }
             }
             if (room.Doors[3] != 0)
@@ -300,7 +304,6 @@ public class Level : MonoBehaviour
                     door.localScale = new Vector3(DoorWidth, DoorHeight, WallThickness);
                     door.localPosition = p;
                     door.parent = transform;
-                    door.GetComponent<Door>().Ready();
                 }
             }
         }

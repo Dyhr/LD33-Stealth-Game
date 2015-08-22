@@ -37,7 +37,7 @@ public class Bullet : MonoBehaviour
         var human = c.transform.GetComponent<Human>();
         if (human != null)
         {
-            //human.HP -= Mathf.Max(Damage - Mathf.Max(human.Armor - Piercing, 0), 0);
+            human.HP -= Mathf.Max(Damage - Mathf.Max(human.Armor - Piercing, 0), 0);
         }
         Destroy(gameObject);
     }

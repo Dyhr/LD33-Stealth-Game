@@ -2,32 +2,36 @@
 using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(Networkable))]
 public class Door : MonoBehaviour
 {
     public AnimationCurve Curve;
+    public bool Open;
 
-    private Vector3 Pre;
-    private Vector3 Position;
-    private Vector3 Origin;
+    public int Level
+    {
+        get { return GetComponent<Networkable>().Level; }
+    }
+
     private float time;
     private bool guarded;
     private bool protect;
-    
+
     private void Start()
     {
-        Ready();
-    }
-
-    public void Ready()
-    {
-        Origin = Pre = Position = transform.localPosition;
+        time = 1;
     }
 
     private void Update()
     {
-        time += Time.deltaTime;
-        if (time <= 1)
-            transform.localPosition = Vector3.Lerp(Pre, Position, Curve.Evaluate(time));
+        time += Open ? -Time.deltaTime : Time.deltaTime;
+        time = Mathf.Clamp01(time);
+
+        var s = Mathf.Clamp(Curve.Evaluate(time)/2,0.05f,0.5f);
+        transform.GetChild(0).localScale = new Vector3(s, 1, 1);
+        transform.GetChild(1).localScale = new Vector3(s, 1, 1);
+        transform.GetChild(0).localPosition = Vector3.right * (0.5f - s/2);
+        transform.GetChild(1).localPosition = -Vector3.right * (0.5f - s/2);
     }
 
     public void Activate(string ID)
@@ -35,12 +39,10 @@ public class Door : MonoBehaviour
         if(guarded) return;
         guarded = ID.Contains("GUARD");
 
-        Pre = Position;
-        if (Position == Origin || guarded)
-            Position = Origin - Vector3.up*3;
-        else
-            Position = Origin;
-        time = 0;
+        var level = IntParseFast(ID[0].ToString());
+        if (level < Level) return;
+
+        Open = !Open || guarded;
 
         if (guarded)
             StartCoroutine(Unguard());
@@ -49,8 +51,18 @@ public class Door : MonoBehaviour
     IEnumerator Unguard()
     {
         yield return new WaitForSeconds(2);
-        Pre = Position;
-        Position = Origin;
-        time = 0;
+        Open = false;
+        guarded = false;
+    }
+
+    int IntParseFast(string value)
+    {
+        var result = 0;
+        for (var i = 0; i < value.Length; i++)
+        {
+            var letter = value[i];
+            result = 10 * result + (int)char.GetNumericValue(letter);
+        }
+        return result;
     }
 }

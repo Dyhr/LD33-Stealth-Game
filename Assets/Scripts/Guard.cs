@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Pathfinding;
 using UnityEngine;
 using System.Collections;
@@ -21,6 +22,7 @@ public class Guard : MonoBehaviour
     private Path path;
     private int currentWaypoint = 0;
     private static GameObject[] _switches;
+    private static readonly Dictionary<Transform, float> _patrols = new Dictionary<Transform, float>();
     private static Transform _player;
     private static Rigidbody _playerr;
     private bool _awaitingPath;
@@ -31,9 +33,11 @@ public class Guard : MonoBehaviour
         human = GetComponent<Human>();
         seeker = GetComponent<Seeker>();
         seeker.pathCallback += OnPathComplete;
-        seeker.StartPath(transform.position, targetPosition);
         if (_switches == null)
             _switches = GameObject.FindGameObjectsWithTag("Switch");
+        if (_patrols.Count == 0)
+            foreach (var go in GameObject.FindGameObjectsWithTag("Patrol"))
+                _patrols.Add(go.transform, 0);
         if (_player == null)
             _player = GameObject.FindGameObjectWithTag("Player").transform;
         if (_playerr == null)
@@ -56,18 +60,44 @@ public class Guard : MonoBehaviour
             if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) < nextWaypointDistance)
                 currentWaypoint++;
         }
+        else if (!_awaitingPath)
+        {
+            var maxt = 0f;
+            var max = new List<Transform>();
+            foreach (var patrol in _patrols.Keys.ToArray())
+            {
+                var value = _patrols[patrol];
+                _patrols[patrol] = value + Time.deltaTime;
+                if (maxt < value)
+                {
+                    maxt = value;
+                    max.Clear();
+                }
+                if (maxt == value)
+                {
+                    max.Add(patrol);
+                    _patrols[patrol] = 0;
+                }
+            }
+            if (max.Count > 0)
+            {
+                targetPosition = max[Random.Range(0,max.Count)].position;
+                _awaitingPath = true;
+                seeker.StartPath(transform.position, targetPosition);
+            }
+        }
 
         if (Physics.Raycast(transform.position, transform.forward, out _hit, 2))
         {
-            if (_hit.transform.CompareTag("Switch"))
+            if (_hit.transform.parent != null && _hit.transform.parent.CompareTag("Switch"))
             {
-                if (_hit.transform.GetComponent<Door>() != null)
+                if (_hit.transform.parent.GetComponent<Door>() != null)
                 {
-                    _hit.transform.SendMessage("Activate", "GUARD");
+                    _hit.transform.parent.SendMessage("Activate", human.Level + "GUARD");
                 }
             }
         }
-        var dir = (_player.position - transform.position).normalized;
+        var dir = _player != null ? (_player.position - transform.position).normalized : Vector3.zero;
         if (_player != null && Physics.Raycast(transform.position, dir, out _hit))
         {
             if (_hit.transform == _player && Vector3.Dot(dir, transform.forward) > Mathf.Cos(DetectionAngle * Mathf.Deg2Rad))
