@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Switch
   - Patrol
+  - Guard
   layers:
   - Default
   - TransparentFX

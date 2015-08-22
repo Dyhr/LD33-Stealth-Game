@@ -93,7 +93,7 @@ public class Guard : MonoBehaviour
             {
                 if (_hit.transform.parent.GetComponent<Door>() != null)
                 {
-                    _hit.transform.parent.SendMessage("Activate", human.Level + "GUARD");
+                    _hit.transform.parent.SendMessage("Activate", human);
                 }
             }
         }
@@ -121,6 +121,12 @@ public class Guard : MonoBehaviour
         if (alert == 2)
             alert = 1;
     }
+
+    public void Interrupt()
+    {
+        path = null;
+    }
+
     public void OnPathComplete(Path p)
     {
         if (p.error) return;

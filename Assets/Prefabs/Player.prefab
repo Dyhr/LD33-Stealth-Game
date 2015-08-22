@@ -94,10 +94,12 @@ MonoBehaviour:
   Speed: 5
   HP: 50
   Armor: 0
+  Level: 1
   InputControl: {x: 0, y: 0, z: 0}
   InputFire: 0
   Forward: {x: 0, y: 0, z: 1}
   Right: {x: 1, y: 0, z: 0}
+  LockRot: 0
 --- !u!114 &11493676
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -149,6 +151,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: ActivateDistance
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: Level
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -20,6 +20,7 @@ public class Door : MonoBehaviour
     private void Start()
     {
         time = 1;
+        GetComponent<Networkable>().Level = Random.Range(0, 4);
     }
 
     private void Update()
@@ -34,13 +35,16 @@ public class Door : MonoBehaviour
         transform.GetChild(1).localPosition = -Vector3.right * (0.5f - s/2);
     }
 
-    public void Activate(string ID)
+    public void Activate(Human human)
     {
         if(guarded) return;
-        guarded = ID.Contains("GUARD");
 
-        var level = IntParseFast(ID[0].ToString());
-        if (level < Level) return;
+        if (human.Level < Level)
+        {
+            if(human.CompareTag("Guard"))human.SendMessage("Interrupt");
+            return;
+        }
+        guarded = human.CompareTag("Guard");
 
         Open = !Open || guarded;
 

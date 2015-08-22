@@ -18,7 +18,7 @@ GameObject:
   - 114: {fileID: 11420732}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Guard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -224,6 +224,7 @@ MonoBehaviour:
   Speed: 4
   HP: 100
   Armor: 20
+  Level: 2
   InputControl: {x: 0, y: 0, z: 0}
   InputFire: 0
   Forward: {x: 0, y: 0, z: 1}
@@ -327,6 +328,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: DetectionAngle
       value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: Level
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: Guard
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
