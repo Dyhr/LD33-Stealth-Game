@@ -162,7 +162,7 @@ public class Level : MonoBehaviour
         return map;
     }
 
-    private void Remake()
+    public void Remake()
     {
         Generate = false;
         while (transform.childCount > 0) DestroyImmediate(transform.GetChild(0).gameObject);

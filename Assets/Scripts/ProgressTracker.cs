@@ -7,6 +7,8 @@ public class ProgressTracker : MonoBehaviour
 
     public static ProgressTracker INSTANCE;
 
+    public int Level = 0;
+
     private void Start()
     {
         if (INSTANCE != null)
@@ -17,19 +19,44 @@ public class ProgressTracker : MonoBehaviour
         INSTANCE = this;
         DontDestroyOnLoad(gameObject);
         StartCoroutine(StatusCheck());
+
+        Rebuild();
     }
 
+    private void Rebuild()
+    {
+        SoftReset();
+        Random.seed = 1337;
+        FindObjectOfType<Level>().Remake();
+        FindObjectOfType<AstarPath>().Scan();
+        foreach (var guard in FindObjectsOfType<Guard>())
+            guard.Interrupt();
+    }
     private void Update()
     {
         if (Input.GetButtonDown("Restart"))
         {
-            Label.INSTANCE = null;
-            Guard._switches = null;
-            Guard._player = null;
-            Guard._playerr = null;
-            Guard._patrols.Clear();
-            Application.LoadLevel(0);
+            HardReset();
         }
+    }
+
+    private void OnLevelWasLoaded(int level)
+    {
+        Rebuild();
+    }
+
+    private void HardReset()
+    {
+        SoftReset();
+        Label.INSTANCE = null;
+        Application.LoadLevel(0);
+    }
+    private void SoftReset()
+    {
+        Guard._switches = null;
+        Guard._player = null;
+        Guard._playerr = null;
+        Guard._patrols.Clear();
     }
 
     IEnumerator StatusCheck()
