@@ -4,6 +4,9 @@ using System.Collections;
 public class Teleport : MonoBehaviour
 {
     public Player Player;
+    public bool Finished;
+
+    private Transform player;
 
     private bool On = false;
     private Vector3 target;
@@ -11,21 +14,28 @@ public class Teleport : MonoBehaviour
 
     private void Update()
     {
-        transform.localScale = Vector3.Lerp(transform.localScale, target, 0.05f);
+        transform.FindChild("Cylinder").localScale = Vector3.Lerp(transform.FindChild("Cylinder").localScale, target, 0.05f);
+        if (Finished && player != null && Vector3.Distance(transform.position, player.position) < 0.5f)
+        {
+            On = false;
+            Destroy(player.gameObject);
+            FindObjectOfType<ProgressTracker>().Finish();
+        }
     }
 
     private void Start()
     {
-        target.y = transform.localScale.y;
+        target.y = transform.FindChild("Cylinder").localScale.y;
         StartCoroutine(Init());
         StartCoroutine(Cycle());
+        Camera.main.transform.position = transform.position - Camera.main.transform.forward * 100;
     }
 
     IEnumerator Init()
     {
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(3);
         On = true;
-        Instantiate(Player, transform.position, Quaternion.identity);
+        player = ((Player)Instantiate(Player, transform.position, Quaternion.identity)).transform;
     }
     IEnumerator Cycle()
     {
@@ -33,7 +43,7 @@ public class Teleport : MonoBehaviour
         {
             yield return new WaitForSeconds(1);
             target = Vector3.one * (On ? (++i%2 == 0 ? 0.2f : 0.5f) : 0);
-            target.y = transform.localScale.y;
+            target.y = transform.FindChild("Cylinder").localScale.y;
         }
     }
 }

@@ -38,10 +38,6 @@ public class Guard : MonoBehaviour
         if (_patrols.Count == 0)
             foreach (var go in GameObject.FindGameObjectsWithTag("Patrol"))
                 _patrols.Add(go.transform, 0);
-        if (_player == null)
-            _player = GameObject.FindGameObjectWithTag("Player").transform;
-        if (_playerr == null)
-            _playerr = _player.GetComponent<Rigidbody>();
     }
 
     public void Update()

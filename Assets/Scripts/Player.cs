@@ -38,6 +38,11 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        if (Guard._player == null)
+            Guard._player = GameObject.FindGameObjectWithTag("Player").transform;
+        if (Guard._playerr == null)
+            Guard._playerr = Guard._player.GetComponent<Rigidbody>();
+
         if (Camera == null) Camera = Camera.main;
         _human = GetComponent<Human>();
         _human.IdleLook = () =>
