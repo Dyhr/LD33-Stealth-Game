@@ -194,10 +194,10 @@ public class Level : MonoBehaviour
                 room.Neighbors[i] = null;
 
                 var e = Furthest(room);
-                e.Spawns.Add(Terminal.transform, lev+Random.Range(0,2));
+                e.Spawns.Add(Terminal.transform, lev + Random.Range(0, 2));
                 if (Random.value < 0.333f * lev)
                     room.Spawns.Add(Guard.transform, lev);
-                if (Random.value < 0.5f)
+                if (Random.value < 0.6f)
                     room.Spawns.Add(Cabinet.transform, lev);
 
                 p.Level = lev;
@@ -215,6 +215,21 @@ public class Level : MonoBehaviour
         return map;
     }
 
+
+    private HashSet<Networkable> NLog = new HashSet<Networkable>(); 
+    private bool HasTerminal(Networkable n, int level)
+    {
+        if (n == null || NLog.Contains(n)) return false;
+        if (n.GetComponent<Terminal>() && n.Level <= level) return true;
+
+        NLog.Add(n);
+
+        for (int i = 0; i < n.Neighbors.Count; ++i)
+        {
+            if (n.Neighbors[i].Level <= level && HasTerminal(n.Neighbors[i], level)) return true;
+        }
+        return false;
+    }
 
     private void Iterate(Room room, Action<Room> action)
     {
@@ -471,7 +486,7 @@ public class Level : MonoBehaviour
                 }
             }
         }
-        
+
         var network = FindObjectsOfType<Networkable>();
         for (int i = 0; i < maxLevel; ++i)
         {
@@ -489,6 +504,24 @@ public class Level : MonoBehaviour
                 nodes[j].Neighbors.Add(nodes[l]);
             }
         }
+        var cabinets = FindObjectsOfType<Cabinet>();
+        for (int i = 0; i < cabinets.Length; ++i)
+        {
+            NLog.Clear();
+            var n = cabinets[i].GetComponent<Networkable>();
+            var l = 0;
+            while (!HasTerminal(n, n.Level) && l++ < 5)
+            {
+                var j = 0;
+                do
+                {
+                    j = Random.Range(0, network.Length);
+                } while (j == i && n.Neighbors.Contains(network[j]));
+                n.Neighbors.Add(network[j]);
+                network[j].Neighbors.Add(n);
+            }
+        }
+
         for (int i = 0; i < network.Length; ++i)
         {
             if (network[i].Neighbors.Count > 0) continue;
@@ -496,7 +529,7 @@ public class Level : MonoBehaviour
             do
             {
                 j = Random.Range(0, network.Length);
-            } while (j == i);
+            } while (j == i && network[i].Neighbors.Contains(network[j]));
             network[i].Neighbors.Add(network[j]);
             network[j].Neighbors.Add(network[i]);
         }

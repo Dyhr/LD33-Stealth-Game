@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b367a6709a352f84980df976a42ed885, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Card: {fileID: 412470, guid: 00a70e8ac3d8511429aabcea38d76b82, type: 2}
+  Card: {fileID: 11414470, guid: 00a70e8ac3d8511429aabcea38d76b82, type: 2}
 --- !u!114 &11459738
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -281,7 +281,8 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: Card
       value: 
-      objectReference: {fileID: 412470, guid: 00a70e8ac3d8511429aabcea38d76b82, type: 2}
+      objectReference: {fileID: 11414470, guid: 00a70e8ac3d8511429aabcea38d76b82,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 116886}
