@@ -34,3 +34,17 @@ public class Networkable : MonoBehaviour
         }
     }
 }
+
+public class Creds
+{
+    public string Name;
+    public int Level;
+    public Human Owner;
+
+    public Creds(string name, int level, Human owner)
+    {
+        Name = name;
+        Level = level;
+        Owner = owner;
+    }
+}

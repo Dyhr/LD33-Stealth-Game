@@ -35,16 +35,16 @@ public class Door : MonoBehaviour
         transform.GetChild(1).localPosition = -Vector3.right * (0.5f - s/2);
     }
 
-    public void Activate(Human human)
+    public void Activate(Creds creds)
     {
         if(guarded) return;
 
-        if (human.Level < Level)
+        if (creds.Level < Level)
         {
-            if(human.CompareTag("Guard"))human.SendMessage("Interrupt");
+            if (creds.Owner != null && creds.Owner.CompareTag("Guard")) creds.Owner.SendMessage("Interrupt");
             return;
         }
-        guarded = human.CompareTag("Guard");
+        guarded = creds.Owner != null && creds.Owner.CompareTag("Guard");
 
         Open = !Open || guarded;
 

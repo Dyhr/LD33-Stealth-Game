@@ -29,12 +29,13 @@ public class HackMode : MonoBehaviour
     {
         if (LogA.Contains(n)) return;
         LogA.Add(n);
+        DrawNode(n);
         foreach (var neighbor in n.Neighbors)
         {
             DrawNode(neighbor);
             MakeLine(n,neighbor);
-            if(neighbor.Level <= Level)
-                DoLines(neighbor);
+            //if(neighbor.Level <= Level)
+            //    DoLines(neighbor);
         }
     }
 
@@ -86,6 +87,14 @@ public class HackMode : MonoBehaviour
             if (node != null)
             {
                 node.Hover = true;
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    node.Activate(new Creds("Hack",Level, GameObject.FindGameObjectWithTag("Player").GetComponent<Human>()));
+                    if (node.Hacked)
+                    {
+                        DoLines(node.Origin);
+                    }
+                }
             }
         }
     }

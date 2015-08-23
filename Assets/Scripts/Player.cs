@@ -93,7 +93,7 @@ public class Player : MonoBehaviour
                 }
                 if (Input.GetButtonDown("Action"))
                 {
-                    s.transform.SendMessage("Activate", _human);
+                    s.transform.SendMessage("Activate", _human.Creds);
                 }
             }
         }

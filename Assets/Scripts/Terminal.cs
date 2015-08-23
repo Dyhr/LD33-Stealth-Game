@@ -9,9 +9,12 @@ public class Terminal : MonoBehaviour
         GetComponent<Networkable>().Level = Random.Range(1, 4);
     }
 
-    public void Activate(Human human)
+    public void Activate(Creds creds)
     {
-        var player = human.GetComponent<Player>();
-        if (player != null) player.Hack = player.Hack != GetComponent<Networkable>() ? GetComponent<Networkable>() : null;
+        if (creds.Owner != null && creds.Owner.GetComponent<Player>())
+        {
+            var player = creds.Owner.GetComponent<Player>();
+            player.Hack = player.Hack != GetComponent<Networkable>() ? GetComponent<Networkable>() : null;
+        }
     }
 }

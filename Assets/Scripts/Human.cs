@@ -12,6 +12,11 @@ public class Human : MonoBehaviour
     public float Armor;
     public int Level;
 
+    public Creds Creds
+    {
+        get { return new Creds(name, Level, this); }
+    }
+
     public AnimationCurve AimCurve;
     public float AimTimeMul;
 
