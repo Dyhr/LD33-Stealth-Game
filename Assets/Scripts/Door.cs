@@ -33,6 +33,9 @@ public class Door : MonoBehaviour
         transform.GetChild(1).localScale = new Vector3(s, 1, 1);
         transform.GetChild(0).localPosition = Vector3.right * (0.5f - s/2);
         transform.GetChild(1).localPosition = -Vector3.right * (0.5f - s/2);
+
+        GetComponent<Networkable>().Status = Open ? "Open" : "Closed";
+        GetComponent<Networkable>().Action = Open ? "Close" : "Open";
     }
 
     public void Activate(Creds creds)

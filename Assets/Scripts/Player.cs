@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
 
     public Material NodeMaterial;
     public Material PlaneMaterial;
+    public Transform NodeLabel;
 
     private HackMode hacker;
     private Networkable _hack;
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
                 hacker = new GameObject("Hacker").AddComponent<HackMode>();
                 hacker.NodeMaterial = NodeMaterial;
                 hacker.PlaneMaterial = PlaneMaterial;
+                hacker.NodeLabel = NodeLabel;
                 hacker.Origin = value;
             }
             if(_hack == null && hacker != null)
@@ -89,7 +91,7 @@ public class Player : MonoBehaviour
                 if (Label.INSTANCE != null && Hack == null)
                 {
                     Label.INSTANCE.Target = s.transform;
-                    Label.INSTANCE.Text.text = item.Name + "\nLevel - " + item.Level + "\nF - " + item.Action;
+                    Label.INSTANCE.Text.text = item.Name + "\nLevel " + NetNode.Roman(item.Level) + "\n" + item.Action;
                 }
                 if (Input.GetButtonDown("Action"))
                 {

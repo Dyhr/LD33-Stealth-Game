@@ -158,7 +158,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 121394}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20.5822277, y: .75999999, z: 3.27639031}
+  m_LocalPosition: {x: -22.4881268, y: .930000007, z: -23.5622673}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 451176}
@@ -392,13 +392,13 @@ Light:
   m_Enabled: 1
   serializedVersion: 6
   m_Type: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: .576470613, g: .266666681, b: .152941182, a: 1}
   m_Intensity: 5
   m_Range: 20
   m_SpotAngle: 60
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_Strength: 1
     m_Bias: .5
@@ -691,6 +691,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Shadows.m_NormalBias
       value: .100000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Shadows.m_Type
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -179,6 +179,7 @@ public class Level : MonoBehaviour
             var g = new GameObject("Room").transform;
             g.parent = transform;
             g.position = new Vector3(room.Position.x, 0, room.Position.y);
+            g.tag = "Merge";
 
             var floor = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
             floor.parent = g;
@@ -198,7 +199,7 @@ public class Level : MonoBehaviour
                 var spawn = Instantiate(room.Spawns[i]);
                 spawn.transform.position = g.position + new Vector3(
                         Random.Range(-room.Size.x/2 + WallThickness*2, room.Size.x/2 - WallThickness*2),
-                        1,
+                        0.5f,
                         Random.Range(-room.Size.y/2 + WallThickness*2, room.Size.y/2 - WallThickness*2));
                 spawn.parent = transform;
             }
@@ -341,6 +342,10 @@ public class Level : MonoBehaviour
                 network[j].Neighbors.Add(network[i]);
             }
         }
+
+        //var merger = new GameObject("Merger").AddComponent<MergeMesh>();
+        //merger.transform.parent = transform;
+        //merger.Merge(GameObject.FindGameObjectsWithTag("Merge").Select(g=>g.transform).ToArray());
     }
 }
 

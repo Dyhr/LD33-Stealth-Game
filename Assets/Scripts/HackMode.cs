@@ -9,6 +9,7 @@ public class HackMode : MonoBehaviour
 
     public Material NodeMaterial;
     public Material PlaneMaterial;
+    public Transform NodeLabel;
 
     public Networkable Origin
     {
@@ -16,8 +17,8 @@ public class HackMode : MonoBehaviour
         {
             MakePlane();
             Level = value.Level;
+            DrawNode(value, true);
             DoLines(value);
-            DrawNode(value);
         }
     }
 
@@ -34,12 +35,12 @@ public class HackMode : MonoBehaviour
         {
             DrawNode(neighbor);
             MakeLine(n,neighbor);
-            //if(neighbor.Level <= Level)
-            //    DoLines(neighbor);
+            if (neighbor.Level <= Level && neighbor.Hacked)
+                DoLines(neighbor);
         }
     }
 
-    private void DrawNode(Networkable n)
+    private void DrawNode(Networkable n, bool hacked = false)
     {
         if (LogB.Contains(n)) return;
         LogB.Add(n);
@@ -51,7 +52,10 @@ public class HackMode : MonoBehaviour
         circle.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
         circle.GetComponent<MeshRenderer>().receiveShadows = false;
         circle.GetComponent<MeshRenderer>().sharedMaterial = NodeMaterial;
-        circle.gameObject.AddComponent<NetNode>().Origin = n;
+        circle.gameObject.AddComponent<NetNode>().Label = NodeLabel;
+        circle.GetComponent<NetNode>().Origin = n;
+        circle.GetComponent<NetNode>().CanHack = n.Level <= Level;
+        if (hacked) circle.GetComponent<NetNode>().Hacked = true;
     }
 
     private void MakePlane()

@@ -13,8 +13,10 @@ public class Terminal : MonoBehaviour
     {
         if (creds.Owner != null && creds.Owner.GetComponent<Player>())
         {
+            var n = GetComponent<Networkable>();
             var player = creds.Owner.GetComponent<Player>();
-            player.Hack = player.Hack != GetComponent<Networkable>() ? GetComponent<Networkable>() : null;
+            player.Hack = player.Hack != n ? n : null;
+            n.Status = player.Hack == n ? "Active" : "Idle";
         }
     }
 }
