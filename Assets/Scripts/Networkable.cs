@@ -16,10 +16,10 @@ public class Networkable : MonoBehaviour
     {
         Fix();
 
-        Gizmos.color = Color.blue;
+        Gizmos.color = Color.cyan;
         foreach (var networkable in Neighbors)
         {
-            Gizmos.DrawLine(transform.position,networkable.transform.position);
+            Gizmos.DrawLine(transform.position + Vector3.up * 2, networkable.transform.position + Vector3.up * 2);
         }
     }
 

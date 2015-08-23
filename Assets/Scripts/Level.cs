@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Pathfinding;
 using UnityEngine;
 using System.Collections;
 
@@ -19,9 +20,10 @@ public class Level : MonoBehaviour
     public Vector2 MaxRoomSize;
 
     public Door Door;
-    public Player Player;
     public Guard Guard;
     public Terminal Terminal;
+    public Transform Spawn;
+    public Transform Goal;
 
     private void Start()
     {
@@ -73,6 +75,8 @@ public class Level : MonoBehaviour
                                 o.Doors[0] = Random.Range(min, max);
                                 room.Doors[1] = (o.Doors[0] * o.Size.y + o.Position.y - o.Size.y / 2 + room.Size.y / 2 -
                                                  room.Position.y) / room.Size.y;
+                                o.Neighbors[0] = room;
+                                room.Neighbors[1] = o;
                             }
                             break;
                         case 1:
@@ -92,6 +96,8 @@ public class Level : MonoBehaviour
                                 o.Doors[1] = Random.Range(min, max);
                                 room.Doors[0] = (o.Doors[1] * o.Size.y + o.Position.y - o.Size.y / 2 + room.Size.y / 2 -
                                                  room.Position.y) / room.Size.y;
+                                o.Neighbors[1] = room;
+                                room.Neighbors[0] = o;
                             }
                             break;
                         case 2:
@@ -111,6 +117,8 @@ public class Level : MonoBehaviour
                                 o.Doors[2] = Random.Range(min, max);
                                 room.Doors[3] = (o.Doors[2] * o.Size.x + o.Position.x - o.Size.x / 2 + room.Size.x / 2 -
                                                  room.Position.x) / room.Size.x;
+                                o.Neighbors[2] = room;
+                                room.Neighbors[3] = o;
                             }
                             break;
                         case 3:
@@ -130,6 +138,8 @@ public class Level : MonoBehaviour
                                 o.Doors[3] = Random.Range(min, max);
                                 room.Doors[2] = (o.Doors[3] * o.Size.x + o.Position.x - o.Size.x / 2 + room.Size.x / 2 -
                                                  room.Position.x) / room.Size.x;
+                                o.Neighbors[3] = room;
+                                room.Neighbors[2] = o;
                             }
                             break;
                     }
@@ -152,19 +162,109 @@ public class Level : MonoBehaviour
                         break;
                     }
                     o.Doors[i] = 0;
+                    o.Neighbors[i] = null;
                 }
             }
         }
 
-        map[Random.Range(0, map.Count)].Spawns.Add(Player.transform);
+        var end = Furthest(map[0]);
+        var start = Furthest(end);
+
+        start.Spawns.Add(Spawn.transform);
+        start.Spawns.Add(Terminal.transform);
+        end.Spawns.Add(Goal.transform);
+
+        var path = Path(start, end);
+        var branches = path.Select(room => room.Neighbors.Where(r => r != null && !path.Contains(r)).ToArray()).ToList();
+        foreach (var branch in branches)
+        {
+            foreach (var room in branch)
+            {
+                if (room == null) continue;
+
+                var p = room.Neighbors.Single(path.Contains);
+                int i = 0;
+                while (room.Neighbors[i] != p) i++;
+                room.Neighbors[i] = null;
+
+                var e = Furthest(room);
+                e.Spawns.Add(Terminal.transform);
+
+                room.Neighbors[i] = p;
+            }
+        }
+
         map[Random.Range(0, map.Count)].Spawns.Add(Guard.transform);
         map[Random.Range(0, map.Count)].Spawns.Add(Guard.transform);
-        map[Random.Range(0, map.Count)].Spawns.Add(Terminal.transform);
-        map[Random.Range(0, map.Count)].Spawns.Add(Terminal.transform);
-        map[Random.Range(0, map.Count)].Spawns.Add(Terminal.transform);
-        map[Random.Range(0, map.Count)].Spawns.Add(Terminal.transform);
 
         return map;
+    }
+
+    private List<Room> Path(Room a, Room b)
+    {
+        RLog.Clear();
+        var result = new List<Room>();
+        IterateP(a, b, result);
+        return result;
+    }
+
+    private bool IterateP(Room room, Room end, List<Room> path)
+    {
+        if (room == null || room.Neighbors == null || RLog.Contains(room))
+        {
+            return false;
+        }
+        RLog.Add(room);
+
+        path.Add(room);
+        if (room == end) return true;
+
+        for (int j = 0; j < room.Neighbors.Length; j++)
+        {
+            var neighbor = room.Neighbors[j];
+            if (neighbor == null || RLog.Contains(neighbor)) continue;
+
+            var v = IterateP(neighbor, end, path);
+            if (v) return true;
+        }
+        path.Remove(room);
+        return false;
+    }
+
+    private HashSet<Room> RLog = new HashSet<Room>(); 
+    private Room Furthest(Room room)
+    {
+        RLog.Clear();
+        Room result;
+        IterateF(room, out result, 0);
+        return result;
+    }
+    private int IterateF(Room room, out Room result, int i)
+    {
+        if (room == null || room.Neighbors == null || RLog.Contains(room))
+        {
+            result = room;
+            return i;
+        }
+        RLog.Add(room);
+
+        var max = 0;
+        var mroom = room;
+
+        for (int j = 0; j < room.Neighbors.Length; j++)
+        {
+            var neighbor = room.Neighbors[j];
+            if (neighbor == null || RLog.Contains(neighbor)) continue;
+            Room r;
+            var v = IterateF(neighbor, out r, i + 1);
+            if (v > max)
+            {
+                max = v;
+                mroom = r;
+            }
+        }
+        result = mroom;
+        return Mathf.Max(max,i);
     }
 
     public void Remake()
@@ -328,19 +428,19 @@ public class Level : MonoBehaviour
                     door.parent = transform;
                 }
             }
+        }
 
-            var network = FindObjectsOfType<Networkable>();
-            for (int i = 0; i < network.Length; ++i)
+        var network = FindObjectsOfType<Networkable>();
+        for (int i = 0; i < network.Length; ++i)
+        {
+            if (network[i].Neighbors.Count > 0) continue;
+            var j = 0;
+            do
             {
-                if(network[i].Neighbors.Count > 0) continue;
-                var j = 0;
-                do
-                {
-                    j = Random.Range(0, network.Length);
-                } while (j == i);
-                network[i].Neighbors.Add(network[j]);
-                network[j].Neighbors.Add(network[i]);
-            }
+                j = Random.Range(0, network.Length);
+            } while (j == i);
+            network[i].Neighbors.Add(network[j]);
+            network[j].Neighbors.Add(network[i]);
         }
 
         //var merger = new GameObject("Merger").AddComponent<MergeMesh>();
