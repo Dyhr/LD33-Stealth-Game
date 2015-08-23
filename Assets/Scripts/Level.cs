@@ -220,13 +220,13 @@ public class Level : MonoBehaviour
     private bool HasTerminal(Networkable n, int level)
     {
         if (n == null || NLog.Contains(n)) return false;
-        if (n.GetComponent<Terminal>() && n.Level <= level) return true;
+        if (n.GetComponent<Terminal>() && n.Level >= level) return true;
 
         NLog.Add(n);
 
         for (int i = 0; i < n.Neighbors.Count; ++i)
         {
-            if (n.Neighbors[i].Level <= level && HasTerminal(n.Neighbors[i], level)) return true;
+            if (HasTerminal(n.Neighbors[i], level)) return true;
         }
         return false;
     }

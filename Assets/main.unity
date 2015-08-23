@@ -5975,7 +5975,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Level 1/5
+  m_Text: Level 1/3
 --- !u!222 &423683071
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -26472,8 +26472,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5, y: 0}
-  m_SizeDelta: {x: -2, y: 1}
+  m_AnchoredPosition: {x: 5.5, y: 0}
+  m_SizeDelta: {x: -1, y: 1}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1852071878
 MonoBehaviour:
@@ -27009,7 +27009,7 @@ MonoBehaviour:
   Guard: {fileID: 11408322, guid: 943016f4fe84eac48b1bfd0c00aebeea, type: 2}
   Terminal: {fileID: 11445742, guid: 7e0ecef858c76344898880970b008fe3, type: 2}
   Spawn: {fileID: 442202, guid: 7425cc8748d4ec14fa8ad2d849e59438, type: 2}
-  Goal: {fileID: 412470, guid: 00a70e8ac3d8511429aabcea38d76b82, type: 2}
+  Goal: {fileID: 422182, guid: 9a4cb4936d3ef7740bb704981f184ca7, type: 2}
   Cabinet: {fileID: 480656, guid: a0fb4a7d5c732e346a11741815c9849a, type: 2}
 --- !u!1 &1905082865
 GameObject:

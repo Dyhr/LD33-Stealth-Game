@@ -8,7 +8,7 @@ public class Card : MonoBehaviour
 
     private void Update()
     {
-        if (Player != null && Vector3.Distance(transform.position, Player.position) < 0.5)
+        if (Player != null && Vector3.Distance(transform.position, Player.position) < 1.5)
         {
             Player.GetComponent<Human>().Level = Mathf.Max(Player.GetComponent<Human>().Level, Level);
             Destroy(gameObject);
