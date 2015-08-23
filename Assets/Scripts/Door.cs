@@ -20,7 +20,6 @@ public class Door : MonoBehaviour
     private void Start()
     {
         time = 1;
-        GetComponent<Networkable>().Level = Random.Range(0, 4);
     }
 
     private void Update()

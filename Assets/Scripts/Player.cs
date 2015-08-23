@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
             {
                 if (Physics.Raycast(Camera.ScreenPointToRay(Input.mousePosition), out _hit))
                 {
-                    var m = _hit.point;
+                    var m = _hit.point + transform.right * 0.25f;
                     m.y = transform.position.y;
                     transform.LookAt(m); // TODO lerp
                 }
@@ -106,5 +106,6 @@ public class Player : MonoBehaviour
         if (Label.INSTANCE != null)
             Label.INSTANCE.Target = null;
         Hack = null;
+        Destroy(FindObjectOfType<HUD>());
     }
 }

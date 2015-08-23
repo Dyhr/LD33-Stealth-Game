@@ -6,7 +6,7 @@ public class Terminal : MonoBehaviour
 {
     private void Start()
     {
-        GetComponent<Networkable>().Level = Random.Range(1, 4);
+        //GetComponent<Networkable>().Level = Random.Range(1, 4);
     }
 
     public void Activate(Creds creds)

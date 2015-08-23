@@ -34,7 +34,7 @@ public class ProgressTracker : MonoBehaviour
                 Random.Range(int.MinValue, int.MaxValue),
             };
 
-        Rebuild();
+        //Rebuild();
     }
 
     private void Rebuild()

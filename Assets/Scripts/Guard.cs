@@ -65,6 +65,7 @@ public class Guard : MonoBehaviour
             var max = new List<Transform>();
             foreach (var patrol in _patrols.Keys.ToArray())
             {
+                if(int.Parse(patrol.name.Split('-')[0]) != human.Level)continue;
                 var value = _patrols[patrol];
                 _patrols[patrol] = value + Time.deltaTime;
                 if (maxt < value)
@@ -94,6 +95,11 @@ public class Guard : MonoBehaviour
                 {
                     _hit.transform.parent.SendMessage("Activate", human.Creds);
                 }
+                if (_hit.transform.parent.GetComponent<Guard>() != null)
+                {
+                    Interrupt();
+                    //human.InputControl = (transform.right - transform.forward).normalized;
+                }
             }
         }
         var dir = _player != null ? (_player.position - transform.position).normalized : Vector3.zero;
@@ -108,7 +114,8 @@ public class Guard : MonoBehaviour
                     _awaitingPath = true;
                     seeker.StartPath(transform.position, targetPosition);
                 }
-                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation((_player.position + _playerr.velocity * 0.2f) - transform.position), 0.5f);
+                transform.rotation = Quaternion.Lerp(transform.rotation, 
+                    Quaternion.LookRotation((_player.position + transform.right*0.25f + _playerr.velocity * 0.2f) - transform.position), 0.5f);
                 human.InputFire = true;
                 human.LockRot = true;
                 alert = 2;

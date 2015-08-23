@@ -428,9 +428,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nextWaypointDistance: 1
   targetPosition: {x: 0, y: 0, z: 0}
-  SlowSpeed: 1
-  NormalSpeed: 4
-  FastSpeed: 7
+  SlowSpeed: .400000006
+  NormalSpeed: 1.60000002
+  FastSpeed: 4
   DetectionAngle: 60
 --- !u!114 &11420732
 MonoBehaviour:
@@ -610,15 +610,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: SlowSpeed
-      value: 1
+      value: .400000006
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: NormalSpeed
-      value: 4
+      value: 1.60000002
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: FastSpeed
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: Armor

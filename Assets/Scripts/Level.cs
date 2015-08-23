@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Pathfinding;
 using UnityEngine;
 using System.Collections;
+using Random = UnityEngine.Random;
 
 public class Level : MonoBehaviour
 {
@@ -24,6 +26,7 @@ public class Level : MonoBehaviour
     public Terminal Terminal;
     public Transform Spawn;
     public Transform Goal;
+    public Transform Cabinet;
 
     private void Start()
     {
@@ -170,14 +173,17 @@ public class Level : MonoBehaviour
         var end = Furthest(map[0]);
         var start = Furthest(end);
 
-        start.Spawns.Add(Spawn.transform);
-        start.Spawns.Add(Terminal.transform);
-        end.Spawns.Add(Goal.transform);
+        start.Spawns.Add(Spawn.transform, 1);
+        start.Spawns.Add(Terminal.transform, 2);
 
         var path = Path(start, end);
         var branches = path.Select(room => room.Neighbors.Where(r => r != null && !path.Contains(r)).ToArray()).ToList();
+        var lev = 0;
+        var l = 0;
         foreach (var branch in branches)
         {
+            l++;
+            lev = l / 2;
             foreach (var room in branch)
             {
                 if (room == null) continue;
@@ -188,18 +194,48 @@ public class Level : MonoBehaviour
                 room.Neighbors[i] = null;
 
                 var e = Furthest(room);
-                e.Spawns.Add(Terminal.transform);
+                e.Spawns.Add(Terminal.transform, lev+Random.Range(0,2));
+                if (Random.value < 0.333f * lev)
+                    room.Spawns.Add(Guard.transform, lev);
+                if (Random.value < 0.5f)
+                    room.Spawns.Add(Cabinet.transform, lev);
+
+                p.Level = lev;
+                Iterate(room, r => r.Level = lev);
 
                 room.Neighbors[i] = p;
             }
         }
+        end.Spawns.Add(Goal.transform, lev);
 
-        map[Random.Range(0, map.Count)].Spawns.Add(Guard.transform);
-        map[Random.Range(0, map.Count)].Spawns.Add(Guard.transform);
+        for (int i = 0; i < map.Count; ++i)
+            if (map[i].Level == 0)
+                map[i].Level = map[i].Neighbors.First(r => r != null).Level;
+        for (int i = 0; i < map.Count; ++i)
+            if (map[i].Level == 0)
+                map[i].Level = map[i].Neighbors.First(r => r != null).Level;
+        for (int i = 0; i < map.Count; ++i)
+            if (map[i].Level == 0)
+                map[i].Level = map[i].Neighbors.First(r => r != null).Level;
 
         return map;
     }
 
+
+    private void Iterate(Room room, Action<Room> action)
+    {
+        if (room == null || room.Neighbors == null || RLog.Contains(room))
+            return;
+        RLog.Add(room);
+        action(room);
+
+        for (int j = 0; j < room.Neighbors.Length; j++)
+        {
+            var neighbor = room.Neighbors[j];
+            if (neighbor == null || RLog.Contains(neighbor)) continue;
+            Iterate(neighbor, action);
+        }
+    }
     private List<Room> Path(Room a, Room b)
     {
         RLog.Clear();
@@ -231,7 +267,7 @@ public class Level : MonoBehaviour
         return false;
     }
 
-    private HashSet<Room> RLog = new HashSet<Room>(); 
+    private HashSet<Room> RLog = new HashSet<Room>();
     private Room Furthest(Room room)
     {
         RLog.Clear();
@@ -264,7 +300,7 @@ public class Level : MonoBehaviour
             }
         }
         result = mroom;
-        return Mathf.Max(max,i);
+        return Mathf.Max(max, i);
     }
 
     public void Remake()
@@ -272,7 +308,7 @@ public class Level : MonoBehaviour
         Generate = false;
         while (transform.childCount > 0) DestroyImmediate(transform.GetChild(0).gameObject);
 
-        var map = GetMap();
+        var map = GetMap().OrderBy(room => room.Level);
 
         foreach (var room in map)
         {
@@ -289,19 +325,26 @@ public class Level : MonoBehaviour
             floor.GetComponent<MeshRenderer>().sharedMaterial = FloorMaterial;
             floor.gameObject.layer = LayerMask.NameToLayer("Ground");
 
-            var patrol = new GameObject("Room").transform;
+            var patrol = new GameObject(room.Level + "-Patrol").transform;
             patrol.parent = transform;
             patrol.position = new Vector3(room.Position.x, 0, room.Position.y);
             patrol.tag = "Patrol";
 
-            for (int i = 0; i < room.Spawns.Count; i++)
+            Networkable startDoor = null;
+            foreach (Transform t in room.Spawns.Keys)
             {
-                var spawn = Instantiate(room.Spawns[i]);
+                var spawn = Instantiate(t);
                 spawn.transform.position = g.position + new Vector3(
-                        Random.Range(-room.Size.x/2 + WallThickness*2, room.Size.x/2 - WallThickness*2),
-                        0.5f,
-                        Random.Range(-room.Size.y/2 + WallThickness*2, room.Size.y/2 - WallThickness*2));
+                    Random.Range(-room.Size.x / 2 + WallThickness * 2, room.Size.x / 2 - WallThickness * 2),
+                    0.5f,
+                    Random.Range(-room.Size.y / 2 + WallThickness * 2, room.Size.y / 2 - WallThickness * 2));
                 spawn.parent = transform;
+                var human = spawn.GetComponent<Human>();
+                var net = spawn.GetComponent<Networkable>();
+                if (human != null) human.Level = room.Spawns[t];
+                if (net != null) net.Level = room.Spawns[t];
+                if (net != null && room.Spawns.ContainsKey(Spawn.transform))
+                    startDoor = net;
             }
 
             var wall = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
@@ -366,71 +409,89 @@ public class Level : MonoBehaviour
             wall.gameObject.layer = LayerMask.NameToLayer("Obstacles");
 
             Transform door;
-            if (room.Doors[0] != 0)
+            var lev = Mathf.Max(room.Level - (Random.value < 0.4 ? 1 : 0), 0);
+            for (int i = 0; i < 4; ++i)
             {
-                var p = new Vector3(
-                    -room.Size.x / 2,
-                    DoorHeight / 2,
-                    room.Size.y * (room.Doors[0]) - room.Size.y / 2);
-                if (!FindObjectsOfType<Door>().Any(d => Vector3.Distance(p + floor.position, d.transform.position) < 1))
+                if (room.Neighbors[i] == null) continue;
+
+                var p = Vector3.zero;
+                switch (i)
                 {
-                    door = Instantiate(Door).transform;
-                    door.parent = g;
-                    door.localScale = new Vector3(DoorWidth, DoorHeight, WallThickness);
-                    door.localPosition = p;
-                    door.Rotate(0,90,0);
-                    door.parent = transform;
+                    case 0:
+                        p = new Vector3(
+                            -room.Size.x / 2,
+                            DoorHeight / 2,
+                            room.Size.y * (room.Doors[0]) - room.Size.y / 2);
+                        break;
+                    case 1:
+                        p = new Vector3(
+                            room.Size.x / 2,
+                            DoorHeight / 2,
+                            room.Size.y * (room.Doors[1]) - room.Size.y / 2);
+                        break;
+                    case 2:
+                        p = new Vector3(
+                            room.Size.x * (room.Doors[2]) - room.Size.x / 2,
+                            DoorHeight / 2,
+                            -room.Size.y / 2);
+                        break;
+                    case 3:
+                        p = new Vector3(
+                            room.Size.x * (room.Doors[3]) - room.Size.x / 2,
+                            DoorHeight / 2,
+                            room.Size.y / 2);
+                        break;
                 }
-            }
-            if (room.Doors[1] != 0)
-            {
-                var p = new Vector3(
-                    room.Size.x / 2,
-                    DoorHeight / 2,
-                    room.Size.y * (room.Doors[1]) - room.Size.y / 2);
-                if (!FindObjectsOfType<Door>().Any(d => Vector3.Distance(p + floor.position, d.transform.position) < 1))
+
+                var already = FindObjectsOfType<Door>()
+                    .SingleOrDefault(d => Vector3.Distance(p + floor.position, d.transform.position) < 1);
+                if (already == null)
                 {
                     door = Instantiate(Door).transform;
                     door.parent = g;
                     door.localScale = new Vector3(DoorWidth, DoorHeight, WallThickness);
                     door.localPosition = p;
-                    door.Rotate(0, 90, 0);
+                    if (i < 2)
+                        door.Rotate(0, 90, 0);
                     door.parent = transform;
+                    door.GetComponent<Networkable>().Level = lev;
+                    if (startDoor != null)
+                    {
+                        door.GetComponent<Networkable>().Neighbors.Add(startDoor);
+                        startDoor.Neighbors.Add(door.GetComponent<Networkable>());
+                        door.GetComponent<Networkable>().Level = 2;
+                    }
                 }
-            }
-            if (room.Doors[2] != 0)
-            {
-                var p = new Vector3(
-                    room.Size.x * (room.Doors[2]) - room.Size.x / 2,
-                    DoorHeight / 2,
-                    -room.Size.y / 2);
-                if (!FindObjectsOfType<Door>().Any(d => Vector3.Distance(p + floor.position, d.transform.position) < 1))
+                else
                 {
-                    door = Instantiate(Door).transform;
-                    door.parent = g;
-                    door.localScale = new Vector3(DoorWidth, DoorHeight, WallThickness);
-                    door.localPosition = p;
-                    door.parent = transform;
-                }
-            }
-            if (room.Doors[3] != 0)
-            {
-                var p = new Vector3(
-                    room.Size.x * (room.Doors[3]) - room.Size.x / 2,
-                    DoorHeight / 2,
-                    room.Size.y / 2);
-                if (!FindObjectsOfType<Door>().Any(d => Vector3.Distance(p + floor.position, d.transform.position) < 1))
-                {
-                    door = Instantiate(Door).transform;
-                    door.parent = g;
-                    door.localScale = new Vector3(DoorWidth, DoorHeight, WallThickness);
-                    door.localPosition = p;
-                    door.parent = transform;
+                    door = already.transform;
+                    if (startDoor != null)
+                    {
+                        door.GetComponent<Networkable>().Neighbors.Add(startDoor);
+                        startDoor.Neighbors.Add(door.GetComponent<Networkable>());
+                        door.GetComponent<Networkable>().Level = 2;
+                    }
                 }
             }
         }
 
         var network = FindObjectsOfType<Networkable>();
+        for (int i = 0; true; ++i)
+        {
+            var nodes = network.Where(n => n.Level == i).ToArray();
+            if (nodes.Length == 0) break;
+            for (int l = 0; l < nodes.Length; ++l)
+            {
+                if (nodes[l].Neighbors.Count > 0) continue;
+                var j = 0;
+                do
+                {
+                    j = Random.Range(0, nodes.Length);
+                } while (j == l);
+                nodes[l].Neighbors.Add(nodes[j]);
+                nodes[j].Neighbors.Add(nodes[l]);
+            }
+        }
         for (int i = 0; i < network.Length; ++i)
         {
             if (network[i].Neighbors.Count > 0) continue;
@@ -455,7 +516,8 @@ class Room
     public Vector2 Size;
     public Vector4 Doors;
     public Room[] Neighbors;
-    public List<Transform> Spawns;
+    public Dictionary<Transform, int> Spawns;
+    public int Level;
 
     public Room(Vector2 Position, Vector2 Size, Vector4 Doors)
     {
@@ -463,6 +525,7 @@ class Room
         this.Size = Size;
         this.Doors = Doors;
         this.Neighbors = new Room[4];
-        this.Spawns = new List<Transform>(6);
+        this.Spawns = new Dictionary<Transform, int>(6);
+        this.Level = 0;
     }
 }
