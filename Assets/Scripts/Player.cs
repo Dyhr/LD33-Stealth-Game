@@ -8,6 +8,9 @@ public class Player : MonoBehaviour
     public Camera Camera;
     public float ActivateDistance;
 
+    public Material NodeMaterial;
+    public Material PlaneMaterial;
+
     private HackMode hacker;
     private Networkable _hack;
     public Networkable Hack
@@ -17,6 +20,8 @@ public class Player : MonoBehaviour
             _hack = value;
             if (_hack != null && hacker == null) { 
                 hacker = new GameObject("Hacker").AddComponent<HackMode>();
+                hacker.NodeMaterial = NodeMaterial;
+                hacker.PlaneMaterial = PlaneMaterial;
                 hacker.Origin = value;
             }
             if(_hack == null && hacker != null)
@@ -62,10 +67,15 @@ public class Player : MonoBehaviour
 
             Camera.transform.position = transform.position - Camera.transform.forward*100;
             if (Input.GetAxisRaw("Fire2") > 0) _human.IdleLook();
+
+            Cursor.lockState = CursorLockMode.None;
         }
         else
         {
-            
+            Camera.transform.position += _human.Right*Input.GetAxisRaw("Mouse X") +
+                                         _human.Forward*Input.GetAxisRaw("Mouse Y");
+
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         if (Label.INSTANCE != null)
@@ -76,7 +86,7 @@ public class Player : MonoBehaviour
             var item = s.GetComponent<Networkable>();
             if (item != null)
             {
-                if (Label.INSTANCE != null)
+                if (Label.INSTANCE != null && Hack == null)
                 {
                     Label.INSTANCE.Target = s.transform;
                     Label.INSTANCE.Text.text = item.Name + "\nLevel - " + item.Level + "\nF - " + item.Action;

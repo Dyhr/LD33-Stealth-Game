@@ -370,6 +370,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Camera: {fileID: 0}
   ActivateDistance: 3
+  NodeMaterial: {fileID: 2100000, guid: 3c519a9ebea3bd74d80b92b3c92e93b8, type: 2}
+  PlaneMaterial: {fileID: 2100000, guid: 60d009545c79f69418b57cb9180fd842, type: 2}
 --- !u!114 &11498676
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -459,6 +461,14 @@ Prefab:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: NodeMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 3c519a9ebea3bd74d80b92b3c92e93b8, type: 2}
+    - target: {fileID: 0}
+      propertyPath: PlaneMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 60d009545c79f69418b57cb9180fd842, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 121394}
