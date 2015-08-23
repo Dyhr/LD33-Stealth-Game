@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
             _human.InputFire = Input.GetButtonDown("Fire1") && Input.GetButton("Fire2");
             _human.InputAim = Input.GetButton("Fire2");
 
-            Camera.transform.position = transform.position - Camera.transform.forward*100;
+            Camera.transform.position = transform.position - Camera.transform.forward*40;
             if (Input.GetAxisRaw("Fire2") > 0) _human.IdleLook();
 
             Cursor.lockState = CursorLockMode.None;

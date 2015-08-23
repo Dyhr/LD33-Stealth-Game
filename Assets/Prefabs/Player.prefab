@@ -367,7 +367,7 @@ MonoBehaviour:
   Speed: 5
   HP: 50
   Armor: 5
-  Level: 20
+  Level: 1
   AimCurve:
     serializedVersion: 2
     m_Curve:
@@ -460,7 +460,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: Level
-      value: 20
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_TagString

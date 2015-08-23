@@ -40,8 +40,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50c4d4581c06a684aa1975cf8bf0a8e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 10000
-  Piercing: 1000
+  Damage: 0
+  Piercing: 5
   Material: {fileID: 2100000, guid: 54f39b4d0cce87f47b85f2402bae6b4f, type: 2}
   Owner: {fileID: 0}
   Forward: {x: 0, y: 0, z: 0}
@@ -111,11 +111,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: Damage
-      value: 10000
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: Piercing
-      value: 1000
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

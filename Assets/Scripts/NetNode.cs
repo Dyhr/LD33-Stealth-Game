@@ -52,12 +52,36 @@ public class NetNode : MonoBehaviour
     {
         if (!Hacked)
         {
-            if (_origin.Level <= creds.Level) Hacked = true;
+            if (_origin.Level <= creds.Level)
+            {
+                if (Random.value < 0.8f)
+                    Hacked = true;
+                else
+                    Alert();
+            }
         }
         else
         {
             _origin.SendMessage("Activate", creds);
         }
+    }
+
+    private void Alert()
+    {
+        if (FindObjectOfType<AstarPath>() == null || Guard._guards == null) return;
+        var p = GameObject.FindGameObjectWithTag("Player");
+        for (int i = 0; i < Guard._guards.Length; ++i)
+        {
+            if (Guard._guards[i] == null) continue;
+
+            var g = Guard._guards[i].GetComponent<Guard>();
+            g.path = null;
+            g.targetPosition = p.transform.position;
+            g._awaitingPath = true;
+            g.seeker.StartPath(g.transform.position, g.targetPosition);
+            g.alert = 2;
+        }
+        p.GetComponent<Player>().Hack = null;
     }
 
     public static string Garble(string s)

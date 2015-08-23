@@ -16,17 +16,20 @@ public class Guard : MonoBehaviour
     public float FastSpeed;
     public float DetectionAngle;
 
+    public bool CanSeePlayer;
+
     private RaycastHit _hit;
     private Human human;
-    private Seeker seeker;
-    private Path path;
+    internal Seeker seeker;
+    internal Path path;
     private int currentWaypoint = 0;
     public static GameObject[] _switches;
     public static readonly Dictionary<Transform, float> _patrols = new Dictionary<Transform, float>();
     public static Transform _player;
     public static Rigidbody _playerr;
-    private bool _awaitingPath;
-    private int alert;
+    public static GameObject[] _guards;
+    internal bool _awaitingPath;
+    internal int alert;
 
     private void Start()
     {
@@ -35,9 +38,32 @@ public class Guard : MonoBehaviour
         seeker.pathCallback += OnPathComplete;
         if (_switches == null)
             _switches = GameObject.FindGameObjectsWithTag("Switch");
+        if (_guards == null)
+            _guards = GameObject.FindGameObjectsWithTag("Guard");
         if (_patrols.Count == 0)
             foreach (var go in GameObject.FindGameObjectsWithTag("Patrol"))
                 _patrols.Add(go.transform, 0);
+    }
+
+    private void OnDestroy()
+    {
+        Reinforce();
+    }
+
+    private void Reinforce()
+    {
+        if (FindObjectOfType<AstarPath>() == null || _guards == null) return;
+        for (int i = 0; i < _guards.Length; ++i)
+        {
+            if (_guards[i] == null) continue;
+
+            var g = _guards[i].GetComponent<Guard>();
+            g.path = null;
+            g.targetPosition = transform.position;
+            g._awaitingPath = true;
+            g.seeker.StartPath(g.transform.position, g.targetPosition);
+            g.alert = 2;
+        }
     }
 
     public void Update()
@@ -98,11 +124,13 @@ public class Guard : MonoBehaviour
                 }
             }
         }
+        CanSeePlayer = false;
         var dir = _player != null ? (_player.position - transform.position).normalized : Vector3.zero;
         if (_player != null && Physics.Raycast(transform.position, dir, out _hit))
         {
             if (_hit.transform == _player && Vector3.Dot(dir, transform.forward) > Mathf.Cos(DetectionAngle * Mathf.Deg2Rad))
             {
+                CanSeePlayer = true;
                 if (!_awaitingPath && Vector3.Distance(_player.position, targetPosition) > 1)
                 {
                     path = null;
@@ -114,6 +142,8 @@ public class Guard : MonoBehaviour
                     Quaternion.LookRotation((_player.position + transform.right*0.25f + _playerr.velocity * 0.2f) - transform.position), 0.5f);
                 human.InputFire = true;
                 human.LockRot = true;
+                if (alert == 0)
+                    Reinforce();
                 alert = 2;
             }
         }

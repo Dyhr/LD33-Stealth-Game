@@ -3,16 +3,13 @@ using System.Collections;
 
 public class Goal : MonoBehaviour
 {
+    public Transform Player;
 
-    // Use this for initialization
-    void Start()
+    private void Update()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        if (Player != null && Vector3.Distance(transform.position, Player.position) < 0.5f)
+        {
+            FindObjectOfType<Teleport>().Finished = true;
+        }
     }
 }

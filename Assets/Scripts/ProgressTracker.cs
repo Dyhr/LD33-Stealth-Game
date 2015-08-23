@@ -76,6 +76,7 @@ public class ProgressTracker : MonoBehaviour
         Guard._switches = null;
         Guard._player = null;
         Guard._playerr = null;
+        Guard._guards = null;
         Guard._patrols.Clear();
     }
 

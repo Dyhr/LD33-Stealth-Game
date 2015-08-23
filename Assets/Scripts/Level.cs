@@ -211,12 +211,6 @@ public class Level : MonoBehaviour
         for (int i = 0; i < map.Count; ++i)
             if (map[i].Level == 0)
                 map[i].Level = map[i].Neighbors.First(r => r != null).Level;
-        for (int i = 0; i < map.Count; ++i)
-            if (map[i].Level == 0)
-                map[i].Level = map[i].Neighbors.First(r => r != null).Level;
-        for (int i = 0; i < map.Count; ++i)
-            if (map[i].Level == 0)
-                map[i].Level = map[i].Neighbors.First(r => r != null).Level;
 
         return map;
     }
@@ -309,6 +303,7 @@ public class Level : MonoBehaviour
         while (transform.childCount > 0) DestroyImmediate(transform.GetChild(0).gameObject);
 
         var map = GetMap().OrderBy(room => room.Level);
+        var maxLevel = 0;
 
         foreach (var room in map)
         {
@@ -329,6 +324,8 @@ public class Level : MonoBehaviour
             patrol.parent = transform;
             patrol.position = new Vector3(room.Position.x, 0, room.Position.y);
             patrol.tag = "Patrol";
+
+            if (room.Level > maxLevel) maxLevel = room.Level;
 
             Networkable startDoor = null;
             foreach (Transform t in room.Spawns.Keys)
@@ -474,12 +471,12 @@ public class Level : MonoBehaviour
                 }
             }
         }
-
+        
         var network = FindObjectsOfType<Networkable>();
-        for (int i = 0; true; ++i)
+        for (int i = 0; i < maxLevel; ++i)
         {
             var nodes = network.Where(n => n.Level == i).ToArray();
-            if (nodes.Length == 0) break;
+
             for (int l = 0; l < nodes.Length; ++l)
             {
                 if (nodes[l].Neighbors.Count > 0) continue;
