@@ -30,14 +30,27 @@ public class ProgressTracker : MonoBehaviour
                 Random.Range(int.MinValue, int.MaxValue),
                 Random.Range(int.MinValue, int.MaxValue),
                 Random.Range(int.MinValue, int.MaxValue),
-                Random.Range(int.MinValue, int.MaxValue),
-                Random.Range(int.MinValue, int.MaxValue),
             };
 
         Rebuild();
     }
 
     public void Finish()
+    {
+        StartCoroutine(NextLevel());
+    }
+
+    IEnumerator NextLevel()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Level++;
+        if (Level < Seeds.Length)
+            Rebuild();
+        else
+            Winner();
+    }
+
+    private void Winner()
     {
         
     }
