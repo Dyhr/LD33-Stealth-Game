@@ -60,7 +60,8 @@ public class Human : MonoBehaviour
         }
         else if (!LockRot)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(move), 0.4f);
+            if(move.magnitude > 0)
+                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(move), 0.4f);
         }
         _rigidbody.velocity = move*Speed;
 

@@ -44,6 +44,7 @@ public class ProgressTracker : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         Level++;
+        FindObjectOfType<Level>().Rooms += 6;
         if (Level < Seeds.Length)
             Rebuild();
         else
@@ -52,7 +53,7 @@ public class ProgressTracker : MonoBehaviour
 
     private void Winner()
     {
-        
+        // TODO win the game
     }
 
     private void Rebuild()
@@ -71,6 +72,8 @@ public class ProgressTracker : MonoBehaviour
         {
             HardReset();
         }
+        if(Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
     }
 
     private void OnLevelWasLoaded(int level)

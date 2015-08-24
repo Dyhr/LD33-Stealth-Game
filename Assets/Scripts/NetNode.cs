@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -42,7 +43,7 @@ public class NetNode : MonoBehaviour
 
         Hover = false;
         text.text = Roman(_origin.Level) + " " + (!Hacked
-            ? (CanHack 
+            ? (CanHack
                 ? "HACK " + Garble(_origin.Name + " - " + _origin.Status)
                 : Garble("HACK " + _origin.Name + " - " + _origin.Status))
             : _origin.Action + " " + _origin.Name + " - " + _origin.Status);
@@ -54,16 +55,26 @@ public class NetNode : MonoBehaviour
         {
             if (_origin.Level <= creds.Level)
             {
-                if (Random.value < 0.8f)
+                if (Alarm(_origin.transform))
+                {
                     Hacked = true;
+                    GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(_origin.HackClip,0.2f);
+                }
                 else
+                {
                     Alert();
+                }
             }
         }
         else
         {
             _origin.SendMessage("Activate", creds);
         }
+    }
+
+    private bool Alarm(Transform t)
+    {
+        return Guard._guards.Where(guard => guard != null).All(guard => !(Vector3.Distance(t.position, guard.transform.position) < 5));
     }
 
     private void Alert()
@@ -82,6 +93,7 @@ public class NetNode : MonoBehaviour
             g.alert = 2;
         }
         p.GetComponent<Player>().Hack = null;
+        p.GetComponent<AudioSource>().PlayOneShot(Guard.AlarmClip);
     }
 
     public static string Garble(string s)

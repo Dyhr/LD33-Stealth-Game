@@ -220,6 +220,8 @@ MonoBehaviour:
   Level: 0
   Status: Closed
   Hacked: 0
+  ActivateClip: {fileID: 8300000, guid: 854edb639be082c4382073cdc9804c59, type: 3}
+  HackClip: {fileID: 8300000, guid: fe8c0de1ade1b9f4f826d99e1174209e, type: 3}
   Neighbors: []
 --- !u!1001 &100100000
 Prefab:
@@ -256,6 +258,14 @@ Prefab:
       propertyPath: Status
       value: Closed
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ActivateClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 854edb639be082c4382073cdc9804c59, type: 3}
+    - target: {fileID: 0}
+      propertyPath: HackClip
+      value: 
+      objectReference: {fileID: 8300000, guid: fe8c0de1ade1b9f4f826d99e1174209e, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 152392}

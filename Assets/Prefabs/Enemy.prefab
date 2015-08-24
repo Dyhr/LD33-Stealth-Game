@@ -15,7 +15,7 @@ GameObject:
   - 114: {fileID: 11420732}
   - 136: {fileID: 13654552}
   - 108: {fileID: 10857040}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy
   m_TagString: Guard
   m_Icon: {fileID: 0}
@@ -32,7 +32,7 @@ GameObject:
   - 4: {fileID: 451176}
   - 33: {fileID: 3330284}
   - 23: {fileID: 2312946}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,7 +48,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 415254}
   - 114: {fileID: 11462080}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65,7 +65,7 @@ GameObject:
   - 4: {fileID: 419706}
   - 33: {fileID: 3327820}
   - 23: {fileID: 2384678}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ GameObject:
   - 4: {fileID: 480876}
   - 33: {fileID: 3379870}
   - 23: {fileID: 2313852}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ GameObject:
   - 4: {fileID: 441676}
   - 33: {fileID: 3390184}
   - 23: {fileID: 2354336}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   - 4: {fileID: 494676}
   - 33: {fileID: 3350634}
   - 23: {fileID: 2394078}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -432,6 +432,9 @@ MonoBehaviour:
   NormalSpeed: 1.60000002
   FastSpeed: 4
   DetectionAngle: 60
+  AlertTime: 1
+  AlertLevel: 3
+  AlarmSound: {fileID: 8300000, guid: 54a49bcdeb1821b4a9ae8b4a22429dce, type: 3}
   CanSeePlayer: 0
 --- !u!114 &11420732
 MonoBehaviour:
@@ -494,6 +497,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Bullet: {fileID: 11470814, guid: 1f373b153c43f4a44ac1c3a5418f3156, type: 2}
+  Recharge: .100000001
+  Inaccuracy: .100000001
+  ShootClip: {fileID: 8300000, guid: e1ffde9db8da35744aca93bd7fd84c1a, type: 3}
 --- !u!114 &11477914
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -508,7 +514,7 @@ MonoBehaviour:
   Height: .5
   Speed: 4
   HP: 100
-  Armor: 20
+  Armor: 0
   Level: 2
   AimCurve:
     serializedVersion: 2
@@ -623,7 +629,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: Armor
-      value: 20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: DetectionAngle
@@ -655,7 +661,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Layer
-      value: 0
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: AimCurve.m_Curve.Array.data[0].inSlope
@@ -702,6 +708,30 @@ Prefab:
       value: 
       objectReference: {fileID: 11470814, guid: 1f373b153c43f4a44ac1c3a5418f3156,
         type: 2}
+    - target: {fileID: 0}
+      propertyPath: Recharge
+      value: .100000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: Inaccuracy
+      value: .100000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: AlarmSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 54a49bcdeb1821b4a9ae8b4a22429dce, type: 3}
+    - target: {fileID: 0}
+      propertyPath: AlertLevel
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: AlertTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShootClip
+      value: 
+      objectReference: {fileID: 8300000, guid: e1ffde9db8da35744aca93bd7fd84c1a, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 121394}

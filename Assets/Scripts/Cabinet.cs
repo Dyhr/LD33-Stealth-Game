@@ -20,7 +20,7 @@ public class Cabinet : MonoBehaviour
 
     private void Update()
     {
-        if (Guard._player != null)
+        if (Guard._player != null && Guard._player.GetComponent<Player>() != null)
             net.Action = Guard._player.GetComponent<Player>().Hack == null ? "" : "Unlock";
     }
 
@@ -35,6 +35,6 @@ public class Cabinet : MonoBehaviour
         card.GetComponent<Rigidbody>().AddForce(Random.onUnitSphere*5);
         card.Level = net.Level + Random.Range(1, 3);
         card.Player = Guard._player;
-        GetComponent<Light>().enabled = false;
+        GetComponent<Light>().enabled = false; GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(GetComponent<Networkable>().ActivateClip);
     }
 }

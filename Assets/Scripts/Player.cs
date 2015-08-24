@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public Material NodeMaterial;
     public Material PlaneMaterial;
     public Transform NodeLabel;
+    public AudioClip TeleClip;
 
     private HackMode hacker;
     private Networkable _hack;
@@ -62,6 +63,8 @@ public class Player : MonoBehaviour
         _human.Right = Camera.transform.right;
         _human.Right.y = 0;
         _switches = GameObject.FindGameObjectsWithTag("Switch");
+
+        GetComponent<AudioSource>().PlayOneShot(TeleClip, 0.8f);
     }
 
     private void Update()

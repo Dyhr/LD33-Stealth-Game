@@ -439,9 +439,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a9454f6d924ac41866468533a3758f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 90
+  Speed: 120
   Speed2: 1
   Player: {fileID: 0}
+  PickupClip: {fileID: 8300000, guid: d6867180449f04a4d86de583eb32ff12, type: 3}
 --- !u!136 &13684984
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -464,12 +465,16 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: Speed
-      value: 90
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: Speed2
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: PickupClip
+      value: 
+      objectReference: {fileID: 8300000, guid: d6867180449f04a4d86de583eb32ff12, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 144622}

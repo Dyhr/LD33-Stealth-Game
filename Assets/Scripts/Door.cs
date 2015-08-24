@@ -52,6 +52,8 @@ public class Door : MonoBehaviour
 
         if (guarded)
             StartCoroutine(Unguard());
+        else
+            GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(GetComponent<Networkable>().ActivateClip);
     }
 
     IEnumerator Unguard()

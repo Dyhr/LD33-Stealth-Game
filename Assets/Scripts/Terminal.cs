@@ -17,6 +17,7 @@ public class Terminal : MonoBehaviour
             var player = creds.Owner.GetComponent<Player>();
             player.Hack = player.Hack != n ? n : null;
             n.Status = player.Hack == n ? "Active" : "Idle";
+            GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(GetComponent<Networkable>().ActivateClip);
         }
     }
 }

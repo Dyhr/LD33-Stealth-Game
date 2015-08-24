@@ -10,6 +10,8 @@ public class Networkable : MonoBehaviour
     public int Level;
     public string Status;
     public bool Hacked;
+    public AudioClip ActivateClip;
+    public AudioClip HackClip;
     public List<Networkable> Neighbors;
 
     private void OnDrawGizmos()

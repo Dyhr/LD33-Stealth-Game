@@ -15,6 +15,9 @@ public class Guard : MonoBehaviour
     public float NormalSpeed;
     public float FastSpeed;
     public float DetectionAngle;
+    public float AlertTime;
+    public float AlertLevel;
+    public AudioClip AlarmSound;
 
     public bool CanSeePlayer;
 
@@ -23,6 +26,7 @@ public class Guard : MonoBehaviour
     internal Seeker seeker;
     internal Path path;
     private int currentWaypoint = 0;
+    public static AudioClip AlarmClip;
     public static GameObject[] _switches;
     public static readonly Dictionary<Transform, float> _patrols = new Dictionary<Transform, float>();
     public static Transform _player;
@@ -33,6 +37,7 @@ public class Guard : MonoBehaviour
 
     private void Start()
     {
+        AlarmClip = AlarmSound;
         human = GetComponent<Human>();
         seeker = GetComponent<Seeker>();
         seeker.pathCallback += OnPathComplete;
@@ -47,12 +52,15 @@ public class Guard : MonoBehaviour
 
     private void OnDestroy()
     {
+        StopAllCoroutines();
         Reinforce();
     }
 
     private void Reinforce()
     {
-        if (FindObjectOfType<AstarPath>() == null || _guards == null) return;
+        if (human.Level < AlertLevel || FindObjectOfType<AstarPath>() == null || _guards == null) return;
+        if(_player!= null)
+            _player.GetComponent<AudioSource>().PlayOneShot(AlarmSound);
         for (int i = 0; i < _guards.Length; ++i)
         {
             if (_guards[i] == null) continue;
@@ -60,6 +68,34 @@ public class Guard : MonoBehaviour
             var g = _guards[i].GetComponent<Guard>();
             g.path = null;
             g.targetPosition = transform.position;
+            g._awaitingPath = true;
+            g.seeker.StartPath(g.transform.position, g.targetPosition);
+            g.alert = 2;
+        }
+    }
+
+    private bool Alarming;
+    public void Alarm()
+    {
+        if(!Alarming)
+            StartCoroutine(DoAlarm());
+    }
+
+    IEnumerator DoAlarm()
+    {
+        Alarming = true;
+        yield return new WaitForSeconds(AlertTime);
+        Alarming = false;
+        if (!CanSeePlayer) yield break;
+
+        if (FindObjectOfType<AstarPath>() == null || _guards == null) yield break;
+        for (int i = 0; i < _guards.Length; ++i)
+        {
+            if (_guards[i] == null) continue;
+
+            var g = _guards[i].GetComponent<Guard>();
+            g.path = null;
+            g.targetPosition = _player.position;
             g._awaitingPath = true;
             g.seeker.StartPath(g.transform.position, g.targetPosition);
             g.alert = 2;
@@ -87,7 +123,7 @@ public class Guard : MonoBehaviour
             var max = new List<Transform>();
             foreach (var patrol in _patrols.Keys.ToArray())
             {
-                if(int.Parse(patrol.name.Split('-')[0]) != human.Level)continue;
+                if (int.Parse(patrol.name.Split('-')[0]) != human.Level) continue;
                 var value = _patrols[patrol];
                 _patrols[patrol] = value + Time.deltaTime;
                 if (maxt < value)
@@ -103,7 +139,7 @@ public class Guard : MonoBehaviour
             }
             if (max.Count > 0)
             {
-                targetPosition = max[Random.Range(0,max.Count)].position;
+                targetPosition = max[Random.Range(0, max.Count)].position;
                 _awaitingPath = true;
                 seeker.StartPath(transform.position, targetPosition);
             }
@@ -138,12 +174,12 @@ public class Guard : MonoBehaviour
                     _awaitingPath = true;
                     seeker.StartPath(transform.position, targetPosition);
                 }
-                transform.rotation = Quaternion.Lerp(transform.rotation, 
-                    Quaternion.LookRotation((_player.position + transform.right*0.25f + _playerr.velocity * 0.2f) - transform.position), 0.5f);
+                transform.rotation = Quaternion.Lerp(transform.rotation,
+                    Quaternion.LookRotation((_player.position + transform.right * 0.25f + _playerr.velocity * 0.2f) - transform.position), 0.5f);
                 human.InputFire = true;
                 human.LockRot = true;
                 if (alert == 0)
-                    Reinforce();
+                    Alarm();
                 alert = 2;
             }
         }

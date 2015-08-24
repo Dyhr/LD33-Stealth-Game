@@ -6,6 +6,7 @@ public class Goal : MonoBehaviour
     public float Speed;
     public float Speed2;
     public Transform Player;
+    public AudioClip PickupClip;
 
     private Transform Price;
     private Vector3 target;
@@ -31,6 +32,7 @@ public class Goal : MonoBehaviour
             Price.Rotate(0,45,0,Space.Self);
             Price = null;
             FindObjectOfType<Teleport>().Finished = true;
+            Player.GetComponent<AudioSource>().PlayOneShot(PickupClip,0.8f);
 
             Alert();
             var doors = FindObjectsOfType<Door>();

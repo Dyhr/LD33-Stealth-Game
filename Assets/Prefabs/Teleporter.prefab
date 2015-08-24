@@ -195,6 +195,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 11493676, guid: 0334b415449ffb149a79221133bbb4d6, type: 2}
+  Finished: 0
+  TeleClip: {fileID: 8300000, guid: 00446282eca8e6e4389e5a68bb0c8432, type: 3}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -207,6 +209,10 @@ Prefab:
       value: 
       objectReference: {fileID: 11493676, guid: 0334b415449ffb149a79221133bbb4d6,
         type: 2}
+    - target: {fileID: 0}
+      propertyPath: TeleClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 00446282eca8e6e4389e5a68bb0c8432, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 178426}

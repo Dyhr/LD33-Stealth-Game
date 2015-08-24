@@ -5,6 +5,7 @@ public class Teleport : MonoBehaviour
 {
     public Player Player;
     public bool Finished;
+    public AudioClip TeleClip;
 
     private Transform player;
 
@@ -20,6 +21,7 @@ public class Teleport : MonoBehaviour
             On = false;
             Destroy(player.gameObject);
             FindObjectOfType<ProgressTracker>().Finish();
+            Player.GetComponent<AudioSource>().PlayOneShot(TeleClip, 0.8f);
         }
     }
 
